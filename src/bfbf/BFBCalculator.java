@@ -24,6 +24,8 @@
 package bfbf;
 
 
+import bfbf.weights.Weights;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

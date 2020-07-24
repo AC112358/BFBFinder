@@ -1,7 +1,6 @@
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -9,36 +8,31 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.ErrorManager;
 
-import org.apache.commons.math3.analysis.function.Abs;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
-import cgh.CGHFileHandler;
 import cgh.CGPFileStatistics;
 import bfbf.AllPairwiseBFBStringAccumulator;
 import bfbf.BFB;
-import bfbf.BFBCalculator;
-import bfbf.BFBFileReader;
-import bfbf.BFBPalindrome;
+import cgh.BFBFileReader;
+import bfbf.palindromes.BFBPalindrome;
 import bfbf.BFB_Algo;
 //import bfbf.Bfb;
-import bfbf.ChromosomeArm;
+import cgh.ChromosomeArm;
 import bfbf.Env;
-import bfbf.ErrorModel;
-import bfbf.NoErrorModel;
-import bfbf.PalindromeCollection;
-import bfbf.PoissonErrorModel;
+import bfbf.weights.ErrorModel;
+import bfbf.weights.NoErrorModel;
+import bfbf.palindromes.PalindromeCollection;
+import bfbf.weights.PoissonErrorModel;
 import bfbf.Signature;
 import bfbf.Solution;
 import bfbf.Solution1;
-import bfbf.Weights;
+import bfbf.weights.Weights;
 
 public class Run {
 

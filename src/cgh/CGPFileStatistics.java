@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bfbf.Accumulator;
-import bfbf.BooleanFunction;
 import bfbf.Env;
 
 public class CGPFileStatistics {

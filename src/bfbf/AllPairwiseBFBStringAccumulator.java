@@ -1,13 +1,14 @@
 package bfbf;
 
 
+import bfbf.palindromes.PalindromeCollection;
+import bfbf.weights.Weights;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import bfbf.PalindromeCollection;
 
 public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
 
@@ -71,7 +72,7 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
 		boolean continueEnumeration;
 		if (l == from-1){
 			collection.wrap();
-			continueEnumeration = collection.allFoldings1(this, weight, w, -1, minWeight, sigCruves.get(0), sig);
+			continueEnumeration = collection.allFoldings1(this, weight, w, -1, minWeight, sigCurves.get(0), sig);
 			collection.unwrap();
 		}
 		else if (l < -1){
@@ -105,7 +106,7 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
 		}
 		else{
 			collection.wrap(); 
-			continueEnumeration = collection.allFoldings1(this, weight, w, l, minWeight, sigCruves.get(l-from), sig);
+			continueEnumeration = collection.allFoldings1(this, weight, w, l, minWeight, sigCurves.get(l-from), sig);
 			collection.unwrap();
 		}
 

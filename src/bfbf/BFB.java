@@ -51,6 +51,11 @@ counts, according to the Poisson error model:
 
  */
 
+import bfbf.palindromes.BFBPalindrome;
+import bfbf.palindromes.PalindromeCollection;
+import bfbf.weights.ErrorModel;
+import bfbf.weights.NoErrorModel;
+import bfbf.weights.Weights;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.cli.CommandLine;
@@ -181,7 +186,7 @@ public class BFB {
 
 			String errorModelClassName = getOptValue(cmd, ERROR_MODEL, "NoErrorModel");
 
-			Class<?> clazz = Class.forName(BFB.class.getPackageName() + "." + errorModelClassName);
+			Class<?> clazz = Class.forName(ErrorModel.class.getPackageName() + "." + errorModelClassName);
 			Constructor<?> ctor = clazz.getConstructor();
 			errorModel = (ErrorModel) ctor.newInstance();
 

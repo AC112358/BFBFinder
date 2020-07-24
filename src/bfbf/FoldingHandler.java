@@ -1,5 +1,8 @@
 package bfbf;
 
+import bfbf.palindromes.PalindromeCollection;
+import bfbf.weights.Weights;
+
 import java.util.List;
 
 
@@ -15,7 +18,7 @@ public abstract class FoldingHandler {
 	
 	protected Weights w;
 	protected int from, to; // segment interval begin and end indices
-	protected List<SigCurve> sigCruves;
+	protected List<SigCurve> sigCurves;
 	protected Signature sig;
 	protected double minWeight;
 	
@@ -31,7 +34,7 @@ public abstract class FoldingHandler {
 		this.w = w;
 		this.from = from;
 		this.to = to;
-		sigCruves = SigCurve.sigCurves(w, minWeight, from, to);
+		sigCurves = SigCurve.sigCurves(w, minWeight, from, to);
 		this.minWeight = minWeight;
 	}
 

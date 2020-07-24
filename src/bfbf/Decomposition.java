@@ -23,6 +23,8 @@
 
 package bfbf;
 
+import bfbf.palindromes.*;
+
 /**
  * An object representing a decomposition of an l-BFB palindrome collection.
  * 

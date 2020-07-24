@@ -1,5 +1,7 @@
 package bfbf;
 
+import bfbf.palindromes.PalindromeCollection;
+import bfbf.weights.Weights;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 

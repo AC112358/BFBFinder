@@ -1,4 +1,9 @@
 import bfbf.*;
+import bfbf.palindromes.BFBPalindrome;
+import bfbf.palindromes.Palindrome;
+import bfbf.palindromes.PalindromeCollection;
+import bfbf.weights.NoErrorModel;
+import bfbf.weights.Weights;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
 

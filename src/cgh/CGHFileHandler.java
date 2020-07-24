@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 
-import bfbf.ChromosomeArm;
 import bfbf.Env;
 
 

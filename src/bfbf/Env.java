@@ -25,6 +25,10 @@ package bfbf;
 
 //import cgh.CGHFileHandler;
 
+import bfbf.weights.ErrorModel;
+import bfbf.weights.PoissonErrorModel;
+import bfbf.weights.Weights;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
