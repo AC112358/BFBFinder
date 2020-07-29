@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ConvexPalindrome extends Palindrome {
 
-    private static final List<Palindrome> pool = new ArrayList<Palindrome>();
+    private static final List<Palindrome> pool = new ArrayList<>();
     private static ConvexPalindrome cashKey = new ConvexPalindrome(null, null);
     private static PalindromeFactory<ConvexPalindrome> factory = new ConvexFactory();
 

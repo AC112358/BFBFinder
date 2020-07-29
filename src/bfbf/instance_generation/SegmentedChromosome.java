@@ -46,11 +46,11 @@ public class SegmentedChromosome {
     public SegmentedChromosome(long length, int ploidy) {
         originalLength = length;
         this.ploidy = ploidy;
-        segmentLengths = new ArrayList<Long>();
+        segmentLengths = new ArrayList<>();
         ploidSegments = new List[ploidy];
         ploidLengths = new long[ploidy];
         for (int i = 0; i < ploidy; ++i) {
-            ploidSegments[i] = new ArrayList<Integer>();
+            ploidSegments[i] = new ArrayList<>();
         }
         clear();
     }
@@ -252,7 +252,7 @@ public class SegmentedChromosome {
 
     private void insert(int ploidIx, int start, int end,
                         int insertionIx, boolean isInverted) {
-        List<Integer> insert = new ArrayList<Integer>(ploidSegments[ploidIx].subList(start, end));
+        List<Integer> insert = new ArrayList<>(ploidSegments[ploidIx].subList(start, end));
         if (isInverted) {
             invert(insert, 0, end - start);
         }
@@ -312,7 +312,7 @@ public class SegmentedChromosome {
                 int j = i + 1;
                 while (j < counts.length && counts[j] == 0) {
                     if (toRemove == null) {
-                        toRemove = new ArrayList<Integer>();
+                        toRemove = new ArrayList<>();
                     }
                     toRemove.add(j);
                     segmentLengths.set(i, segmentLength(i) + segmentLength(j));
@@ -389,7 +389,7 @@ public class SegmentedChromosome {
         for (int i = 1; i < segmentLengths.size() - 1; ++i) {
             if (segmentLengths.get(i) < minSegmentLength) {
                 if (toRemove == null) {
-                    toRemove = new ArrayList<Integer>();
+                    toRemove = new ArrayList<>();
                 }
                 toRemove.add(i);
                 segmentLengths.set(i + 1, segmentLengths.get(i) + segmentLengths.get(i + 1));
@@ -398,7 +398,7 @@ public class SegmentedChromosome {
 
         if (segmentLengths.get(segmentLengths.size() - 1) < minSegmentLength) {
             if (toRemove == null) {
-                toRemove = new ArrayList<Integer>();
+                toRemove = new ArrayList<>();
             }
             toRemove.add(segmentLengths.size() - 1);
             int i = toRemove.size() - 2;
@@ -426,7 +426,7 @@ public class SegmentedChromosome {
             }
         }
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         for (int ploidIx = 0; ploidIx < ploidy; ++ploidIx) {
             for (int segment : ploidSegments[ploidIx]) {
                 int sign = (int) Math.signum(segment);

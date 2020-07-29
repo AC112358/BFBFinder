@@ -213,7 +213,7 @@ public class CGPFileStatistics {
 
         Pattern p = Env.getPattern(Env.max(chromosomeIx, locationIx, segmentIdnIx), SEPARATOR_PATTERN_STR, ENTRY_PATTERN_STR);
 
-        List<TIntList[]> coordinates = new ArrayList<TIntList[]>();
+        List<TIntList[]> coordinates = new ArrayList<>();
 
         int segmentIx = 0;
         line = br.readLine();

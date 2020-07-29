@@ -76,7 +76,7 @@ public class BFBFileReader {
     }
 
     public static List<ChromosomeArm> readData(String path) throws IOException {
-        List<ChromosomeArm> arms = new ArrayList<ChromosomeArm>();
+        List<ChromosomeArm> arms = new ArrayList<>();
 
         BufferedReader bf = new BufferedReader(new FileReader(path));
         String line;
@@ -119,7 +119,7 @@ public class BFBFileReader {
 
     private static int[] standartize(int[] count) {
 
-        List<Integer> ls = new ArrayList<Integer>();
+        List<Integer> ls = new ArrayList<>();
         int prev = 0;
 
         for (int i = 0; i < count.length; ++i) {
@@ -157,7 +157,7 @@ public class BFBFileReader {
     }
 
     public static List<int[]> readSimCounts(String path) throws IOException {
-        List<int[]> counts = new ArrayList<int[]>();
+        List<int[]> counts = new ArrayList<>();
         BufferedReader bf = new BufferedReader(new FileReader(path));
         String line;
 

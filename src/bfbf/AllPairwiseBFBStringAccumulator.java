@@ -32,8 +32,8 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
 
         stringCount = 0;
 
-        pairwiseStrings = new ArrayList<Set<String>[]>();
-        stringBuilders = new ArrayList<StringBuilder[]>();
+        pairwiseStrings = new ArrayList<>();
+        stringBuilders = new ArrayList<>();
 
         pairwiseStrings.add(null);
         stringBuilders.add(null);
@@ -48,7 +48,7 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
             StringBuilder[] builders = new StringBuilder[i];
             stringBuilders.add(builders);
             for (int j = 0; j < i; ++j) {
-                sets[j] = new HashSet<String>();
+                sets[j] = new HashSet<>();
                 builders[j] = new StringBuilder();
             }
         }

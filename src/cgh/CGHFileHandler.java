@@ -41,7 +41,7 @@ public class CGHFileHandler {
             11300000, // Y
     };
 
-    public static final Map<String, String> chrStr2Int = new HashMap<String, String>();
+    public static final Map<String, String> chrStr2Int = new HashMap<>();
     public final static String doublePatternStr = "[-+]?[\\d]*\\.?[\\d]+([eE][-+]?[\\d]+)?";
 
     static {
@@ -405,7 +405,7 @@ public class CGHFileHandler {
     public static double[] getBaselineSignal(String path, double windowFraction,
                                              int signalColumn, double logBase) throws IOException {
         BufferedReader br = Env.getBufferedReader(path);
-        List<Double> signals = new ArrayList<Double>();
+        List<Double> signals = new ArrayList<>();
 
         Pattern p = Pattern.compile("([^\\s]+\\s+){" + (signalColumn - 1) + "}(" + doublePatternStr + ")");
         int logRatioGroup = 2;
@@ -559,7 +559,7 @@ public class CGHFileHandler {
 
         BufferedReader segmentationReader = Env.getBufferedReader(segmentationFile);
         BufferedReader cghReader = Env.getBufferedReader(cghFile);
-        List<Double> signals = new ArrayList<Double>();
+        List<Double> signals = new ArrayList<>();
         //		List<Double> countWeights = new ArrayList<Double>();
 
         BufferedWriter countsWriter = new BufferedWriter(new FileWriter(countsFile));
@@ -816,7 +816,7 @@ public class CGHFileHandler {
     }
 
     public static List<ChromosomeArm> getAllChromosomeArms(String path, String fileIdentifier, double minWeightRatio, double weightFactor) throws IOException {
-        List<ChromosomeArm> arms = new ArrayList<ChromosomeArm>();
+        List<ChromosomeArm> arms = new ArrayList<>();
         String sample;
         File inputDir = new File(path);
         for (String file : inputDir.list()) {
@@ -851,10 +851,10 @@ public class CGHFileHandler {
         ChromosomeArm[][] arms = new ChromosomeArm[25][2];
 
         BufferedReader br = Env.getBufferedReader(countsFile);
-        List<Integer> minCounts = new ArrayList<Integer>();
-        List<List<Double>> probablities = new ArrayList<List<Double>>();
-        List<Integer> start = new ArrayList<Integer>();
-        List<Integer> end = new ArrayList<Integer>();
+        List<Integer> minCounts = new ArrayList<>();
+        List<List<Double>> probablities = new ArrayList<>();
+        List<Integer> start = new ArrayList<>();
+        List<Integer> end = new ArrayList<>();
 
         String gIntP = "([\\d]+)\\t";
         String intP = "[\\d]+\\t";
@@ -914,7 +914,7 @@ public class CGHFileHandler {
                 }
 
                 double currWeight = maxWeight;
-                List<Double> currProbs = new ArrayList<Double>();
+                List<Double> currProbs = new ArrayList<>();
 
                 for (int i = countMedian - 1; i >= -1 && currWeight / maxWeight >= minWeightRation; --i) {
                     currProbs.add(currWeight);

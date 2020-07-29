@@ -52,14 +52,14 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
     private int fullSize;
 
     public PalindromeCollection() {
-        multiplicities = new ArrayList<Integer>();
+        multiplicities = new ArrayList<>();
         fullSize = 0;
     }
 
 
     public PalindromeCollection(PalindromeCollection toCopy) {
         super(toCopy);
-        multiplicities = new ArrayList<Integer>(toCopy.multiplicities);
+        multiplicities = new ArrayList<>(toCopy.multiplicities);
         fullSize = toCopy.fullSize;
     }
 
@@ -359,7 +359,7 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
             sizeWeights.add(w.getWeight(l, i) * currWeight);
         }
 
-        List<Block> blocks = new ArrayList<Block>();
+        List<Block> blocks = new ArrayList<>();
         for (int i = 0; i < uniqueSize(); ++i) {
             BFBPalindrome p = get(i);
             if (p instanceof Block) {

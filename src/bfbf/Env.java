@@ -48,8 +48,8 @@ public class Env {
     public static final int DECISION = 3;
     public static final int SEARCH = 4;
 
-    public static final Map<String, String> chrStr2Int = new HashMap<String, String>();
-    private static final Comparator<? super double[]> wrapComparator = new Comparator<double[]>() {
+    public static final Map<String, String> chrStr2Int = new HashMap<>();
+    private static final Comparator<? super double[]> wrapComparator = new Comparator<>() {
 
         @Override
         public int compare(double[] o1, double[] o2) {
@@ -80,10 +80,10 @@ public class Env {
     }
 
     static {
-        intArrLists = new ArrayList<List<int[]>>();
-        wrapArrLists = new ArrayList<List<double[][]>>();
-        solutionList = new ArrayList<Solution1>();
-        solutionLists = new ArrayList<List<Solution1>>();
+        intArrLists = new ArrayList<>();
+        wrapArrLists = new ArrayList<>();
+        solutionList = new ArrayList<>();
+        solutionLists = new ArrayList<>();
         errorModel = new PoissonErrorModel();
     }
 
@@ -106,7 +106,7 @@ public class Env {
 
     public static void returnIntArray(int[] arr) {
         while (arr.length >= intArrLists.size()) {
-            intArrLists.add(new ArrayList<int[]>());
+            intArrLists.add(new ArrayList<>());
         }
 
         intArrLists.get(arr.length).add(arr);
@@ -131,7 +131,7 @@ public class Env {
 
     private static void returnWrapArray(double[][] arr) {
         while (arr.length >= wrapArrLists.size()) {
-            wrapArrLists.add(new ArrayList<double[][]>());
+            wrapArrLists.add(new ArrayList<>());
         }
 
         wrapArrLists.get(arr.length).add(arr);
@@ -181,7 +181,7 @@ public class Env {
 
     public static List<Solution1> borrowSolutionList() {
         if (solutionLists.isEmpty()) {
-            return new ArrayList<Solution1>();
+            return new ArrayList<>();
         } else return solutionLists.remove(solutionLists.size() - 1);
     }
 
@@ -293,7 +293,7 @@ public class Env {
     }
 
     public static Map<String, Integer> columnTitles2Ixs(String titleLine, String separator) {
-        Map<String, Integer> map = new HashMap<String, Integer>();
+        Map<String, Integer> map = new HashMap<>();
         String[] titles = titleLine.split(separator);
         for (int i = 0; i < titles.length; ++i) {
             map.put(titles[i], i + 1);

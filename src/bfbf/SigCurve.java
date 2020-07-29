@@ -14,7 +14,7 @@ public class SigCurve {
     private double minWeight;
 
     protected SigCurve(double minWeight) {
-        sigs = new ArrayList<Signature>(1);
+        sigs = new ArrayList<>(1);
         weights = new TDoubleArrayList(1);
         sigs.add(new Signature(1));
         weights.add(1);
@@ -22,7 +22,7 @@ public class SigCurve {
     }
 
     private SigCurve(SigCurve prev, Weights w, int l, Signature s) {
-        sigs = new ArrayList<Signature>();
+        sigs = new ArrayList<>();
         weights = new TDoubleArrayList();
         this.minWeight = prev.minWeight;
 
@@ -72,7 +72,7 @@ public class SigCurve {
     public static List<SigCurve> sigCurves(Weights weights, double minWeight, int start, int end) {
         int k = end - start;
         Signature s = new Signature();
-        List<SigCurve> curves = new ArrayList<SigCurve>(k);
+        List<SigCurve> curves = new ArrayList<>(k);
         SigCurve currCurve, prevCurve = new SigCurve(minWeight);
         curves.add(prevCurve);
 

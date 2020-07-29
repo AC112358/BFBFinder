@@ -124,16 +124,16 @@ public class Tmp {
             for (int i = 1; i < counts.length; ++i) {
                 projections[i] = new Set[i];
                 for (int j = 0; j < i; ++j) {
-                    projections[i][j] = new HashSet<String>();
+                    projections[i][j] = new HashSet<>();
                 }
             }
 
             final int[] toBox = {0};
             final int[] neighborsBox = {0};
             final int[] sizeBox = {0};
-            final Set<String> palindromeStrs = new HashSet<String>();
+            final Set<String> palindromeStrs = new HashSet<>();
 
-            Function<BFBPalindrome> collectStringsAndProjections = new Function<BFBPalindrome>() {
+            Function<BFBPalindrome> collectStringsAndProjections = new Function<>() {
                 StringBuilder sb = new StringBuilder();
 
                 @Override
@@ -332,8 +332,8 @@ public class Tmp {
         //			currSolutions = tmp;
         //		}
 
-        final Set<String> allStrings = new HashSet<String>();
-        Function<Palindrome> f = new Function<Palindrome>() {
+        final Set<String> allStrings = new HashSet<>();
+        Function<Palindrome> f = new Function<>() {
 
             @Override
             public void execute(Palindrome arg) {
@@ -452,7 +452,7 @@ public class Tmp {
         toKeepPtrnStr += "]+";
 
         Pattern ptrn = Pattern.compile(toKeepPtrnStr);
-        Map<String, List<Integer>> reduced = new TreeMap<String, List<Integer>>();
+        Map<String, List<Integer>> reduced = new TreeMap<>();
 
         for (int i = 0; i < strs.length; ++i) {
             String curr = "";
@@ -462,7 +462,7 @@ public class Tmp {
             }
             List<Integer> ls = reduced.get(curr);
             if (ls == null) {
-                ls = new ArrayList<Integer>();
+                ls = new ArrayList<>();
                 reduced.put(curr, ls);
             }
             ls.add(i);
@@ -472,7 +472,7 @@ public class Tmp {
     }
 
     private static Map<String, List<Integer>> reduce(byte[][] sequences, int totalLength, char shift, int... toKeep) {
-        Map<String, List<Integer>> reduced = new TreeMap<String, List<Integer>>();
+        Map<String, List<Integer>> reduced = new TreeMap<>();
 
         char[] charArr = new char[totalLength];
         int lastPosition = sequences[0].length - 1;
@@ -492,7 +492,7 @@ public class Tmp {
             String curr = new String(charArr);
             List<Integer> ls = reduced.get(curr);
             if (ls == null) {
-                ls = new ArrayList<Integer>();
+                ls = new ArrayList<>();
                 reduced.put(curr, ls);
             }
             ls.add(i);
@@ -503,11 +503,11 @@ public class Tmp {
     }
 
     public static void printSigCardinalities(int maxSize) {
-        List<Integer> startsWithZero = new ArrayList<Integer>(maxSize + 1);
-        List<Integer> startsWithPositive = new ArrayList<Integer>(maxSize + 1);
-        List<Integer> firstNonzeroIsPositive = new ArrayList<Integer>(maxSize + 1);
-        List<Integer> atMostOne = new ArrayList<Integer>(maxSize + 1);
-        List<Integer> allSeries = new ArrayList<Integer>(maxSize + 1);
+        List<Integer> startsWithZero = new ArrayList<>(maxSize + 1);
+        List<Integer> startsWithPositive = new ArrayList<>(maxSize + 1);
+        List<Integer> firstNonzeroIsPositive = new ArrayList<>(maxSize + 1);
+        List<Integer> atMostOne = new ArrayList<>(maxSize + 1);
+        List<Integer> allSeries = new ArrayList<>(maxSize + 1);
 
         startsWithZero.add(1);
         startsWithPositive.add(0);

@@ -54,7 +54,7 @@ public class Signature implements Comparable<Signature> {
     public static final int L = 0;
     public static final int H = 1;
     private static final Comparator<Solution1> solutionComparator =
-            new Comparator<Solution1>() {
+            new Comparator<>() {
                 @Override
                 public int compare(Solution1 arg0, Solution1 arg1) {
                     return arg0.s.lexCompare(arg1.s);
@@ -62,7 +62,7 @@ public class Signature implements Comparable<Signature> {
             };
     private static final int[] countComparatorStart = {0}; // an auxiliary pointer for countComparator
     private static final int[] countComparatorEnd = {0}; // an auxiliary pointer for countComparator
-    private static final Comparator<int[]> countComparator = new Comparator<int[]>() {
+    private static final Comparator<int[]> countComparator = new Comparator<>() {
         @Override
         public int compare(int[] first, int[] second) {
             for (int d = countComparatorStart[0]; d < countComparatorEnd[0]; ++d) {
@@ -183,11 +183,11 @@ public class Signature implements Comparable<Signature> {
     //TODO: Move to BFB/BFB_algo
     public static List<int[]> allHeavyBFBSubVectors(Weights weights, double minWeight, int minLength) {
 
-        List<int[]> heavyBFBSubVectors = new ArrayList<int[]>();
-        List<int[]> toAdd = new ArrayList<int[]>();
+        List<int[]> heavyBFBSubVectors = new ArrayList<>();
+        List<int[]> toAdd = new ArrayList<>();
 
-        List<Solution1> currSolutions = new ArrayList<Solution1>();
-        List<Solution1> prevSolutions = new ArrayList<Solution1>();
+        List<Solution1> currSolutions = new ArrayList<>();
+        List<Solution1> prevSolutions = new ArrayList<>();
         List<Solution1> tmp;
         BitSet extended = new BitSet();
 
@@ -313,8 +313,8 @@ public class Signature implements Comparable<Signature> {
         }
 
 
-        List<Solution1> currSolutions = new ArrayList<Solution1>();
-        List<Solution1> prevSolutions = new ArrayList<Solution1>();
+        List<Solution1> currSolutions = new ArrayList<>();
+        List<Solution1> prevSolutions = new ArrayList<>();
         List<Solution1> tmp;
         Solution1 emptySolution = new Solution1();
         Solution1 tmpSolution = new Solution1();
@@ -515,7 +515,7 @@ public class Signature implements Comparable<Signature> {
     public static List<Long> numOfExtendedSignatureLs(int maxSize,
                                                       List<Long> numOfExtendedSignatureLs) {
         if (numOfExtendedSignatureLs == null) {
-            numOfExtendedSignatureLs = new ArrayList<Long>();
+            numOfExtendedSignatureLs = new ArrayList<>();
         } else {
             numOfExtendedSignatureLs.clear();
         }
@@ -557,7 +557,7 @@ public class Signature implements Comparable<Signature> {
     public static List<Integer> numOfBitsInSignatureRepLs(int maxSize,
                                                           List<Integer> numOfBitLs) {
         if (numOfBitLs == null) {
-            numOfBitLs = new ArrayList<Integer>();
+            numOfBitLs = new ArrayList<>();
         } else {
             numOfBitLs.clear();
         }

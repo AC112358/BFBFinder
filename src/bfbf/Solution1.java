@@ -65,7 +65,7 @@ public class Solution1 implements Comparable<Solution1> {
 
     public static int[] effectiveCounts(int[] counts) {
         int prev = 0;
-        List<Integer> ls = new ArrayList<Integer>();
+        List<Integer> ls = new ArrayList<>();
         for (int i = 0; i < counts.length; ++i) {
             if (counts[i] != prev) {
                 ls.add(counts[i]);

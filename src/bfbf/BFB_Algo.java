@@ -274,7 +274,7 @@ public class BFB_Algo {
     private static List<int[]> getCounts(String[] args) {
         int i = argIx(args, "counts");
         if (i < args.length) {
-            List<int[]> countsList = new ArrayList<int[]>();
+            List<int[]> countsList = new ArrayList<>();
             String countStr = args[i].substring(7, args[i].length());
             File file = new File(countStr);
             if (file.isFile()) {

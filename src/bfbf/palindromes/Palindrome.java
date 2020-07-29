@@ -41,7 +41,7 @@ public abstract class Palindrome implements Comparable<Palindrome> {
     //	protected int depth;  // The number of nested layers.
 
     protected static final Map<Palindrome, Palindrome> cashedInstances =
-            new HashMap<Palindrome, Palindrome>();
+            new HashMap<>();
     protected static int cashedDepth = 5; // palindromes of depth at most cashedDepth will be cashed for re-usage.
     protected Palindrome center, wrap;
 

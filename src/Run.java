@@ -64,19 +64,15 @@ public class Run {
         //		boolean asserted;
         double error;
 
-        SortedSet<double[]> validCounts = new TreeSet<double[]>(new Comparator<double[]>() {
-
-            @Override
-            public int compare(double[] arg0, double[] arg1) {
-                // comparing p-values:
-                if (arg0[3] < arg1[3]) return -1;
-                else if (arg0[3] > arg1[3]) return 1;
-                    //comparing errors:
-                else if (arg0[2] > arg1[2]) return 1;
-                else return -1;
-            }
+        SortedSet<double[]> validCounts = new TreeSet<>((arg0, arg1) -> {
+            // comparing p-values:
+            if (arg0[3] < arg1[3]) return -1;
+            else if (arg0[3] > arg1[3]) return 1;
+                //comparing errors:
+            else if (arg0[2] > arg1[2]) return 1;
+            else return -1;
         });
-        Set<int[]> unique = new HashSet<int[]>();
+        Set<int[]> unique = new HashSet<>();
 
         int[] neighbor;
 
@@ -85,7 +81,7 @@ public class Run {
         double[][] countProbs = new double[10][];
         ErrorModel model = new PoissonErrorModel();
 
-        List<int[]> allEffectiveCounts = new ArrayList<int[]>();
+        List<int[]> allEffectiveCounts = new ArrayList<>();
 
         for (int i = 0; i < arms.size(); ++i) {
             //			for (int j = 0; j<2; ++j){
@@ -320,7 +316,7 @@ public class Run {
         String outputDir = "data/CGP/analyses/CN/";
         File dir = new File(inputDir);
         String[] files = dir.list();
-        List<ChromosomeArm> arms = new ArrayList<ChromosomeArm>();
+        List<ChromosomeArm> arms = new ArrayList<>();
 
         for (String file : files) {
             if (file.contains(identifier)) {

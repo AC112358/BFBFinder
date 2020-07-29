@@ -56,7 +56,7 @@ public class CGHData implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final int MAX_REFINEMENTS = 10;
     private static final int MAX_REFINEMENT_WINDOW = 20;
-    private static final Map<String, Integer> chrStr2Int = new HashMap<String, Integer>();
+    private static final Map<String, Integer> chrStr2Int = new HashMap<>();
 
     static {
         for (int i = 1; i <= 22; ++i) {
@@ -192,9 +192,9 @@ public class CGHData implements Serializable {
         String path = "data/CGP/";
         File dir = new File(path);
         long start = System.currentTimeMillis();
-        List<Solution1> solutions = new ArrayList<Solution1>();
+        List<Solution1> solutions = new ArrayList<>();
         TIntList minCounts = new TIntArrayList();
-        List<TDoubleList> countProbs = new ArrayList<TDoubleList>();
+        List<TDoubleList> countProbs = new ArrayList<>();
         double maxError = 0.2;
         int beta = 100;
 

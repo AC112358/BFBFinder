@@ -65,7 +65,7 @@ public class TestStatistics {
         //		boolean asserted;
         double error;
 
-        Set<int[]> unique = new HashSet<int[]>();
+        Set<int[]> unique = new HashSet<>();
 
         int[] neighbor;
 

@@ -76,7 +76,7 @@ public class Weights {
             }
 
             TIntList minCounts = new TIntArrayList();
-            ArrayList<double[]> weights = new ArrayList<double[]>();
+            ArrayList<double[]> weights = new ArrayList<>();
 
             String weightStr = null;
             matcher = weightsLinePtrn.matcher(inputStr);

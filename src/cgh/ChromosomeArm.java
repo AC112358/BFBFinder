@@ -99,11 +99,11 @@ public class ChromosomeArm {
 
         BufferedReader br = Env.getBufferedReader(sgmFile);
 
-        List<Integer> startLs = new ArrayList<Integer>();
-        List<Integer> endLs = new ArrayList<Integer>();
-        List<Integer> probeLs = new ArrayList<Integer>();
-        List<Double> logRatioMeanLs = new ArrayList<Double>();
-        List<Double> logRatioSdLs = new ArrayList<Double>();
+        List<Integer> startLs = new ArrayList<>();
+        List<Integer> endLs = new ArrayList<>();
+        List<Integer> probeLs = new ArrayList<>();
+        List<Double> logRatioMeanLs = new ArrayList<>();
+        List<Double> logRatioSdLs = new ArrayList<>();
 
         double logFactor = Math.log(logBase);
 

@@ -320,7 +320,7 @@ public class BFBCalculator {
      */
     @Deprecated
     public static List<int[]> allMaximalBFBSubstring(int[] counts, int minLength, double minWeight) {
-        List<int[]> solutions = new ArrayList<int[]>();
+        List<int[]> solutions = new ArrayList<>();
 
         int[] tempNeighbor = new int[counts.length];
         int[] tempSignature = new int[Env.getMaxR(counts) + 1];
@@ -345,7 +345,7 @@ public class BFBCalculator {
      */
 
     public static List<int[]> allMaximalBFBSubstring(Weights weights, int minLength, double eta) {
-        List<int[]> solutions = new ArrayList<int[]>();
+        List<int[]> solutions = new ArrayList<>();
 
         int k = weights.length();
         int[] tempNeighbor = new int[k];
@@ -368,9 +368,9 @@ public class BFBCalculator {
         int length = solutions.get(0).length;
         ;
         final int[] first = {0};
-        List<int[]> toRemove = new ArrayList<int[]>();
+        List<int[]> toRemove = new ArrayList<>();
 
-        Comparator<int[]> comparator = new Comparator<int[]>() {
+        Comparator<int[]> comparator = new Comparator<>() {
 
             @Override
             public int compare(int[] o1, int[] o2) {
@@ -511,8 +511,8 @@ public class BFBCalculator {
         // strictly lower distance from a BFB vector, while the other has a
         // strictly lower signature. prevLayerSolutions is defined the same with
         // respect to layer l+1.
-        Map<Integer, List<Solution1>> currLayerSolutions = new HashMap<Integer, List<Solution1>>();
-        Map<Integer, List<Solution1>> prevLayerSolutions = new HashMap<Integer, List<Solution1>>();
+        Map<Integer, List<Solution1>> currLayerSolutions = new HashMap<>();
+        Map<Integer, List<Solution1>> prevLayerSolutions = new HashMap<>();
         Solution1 currSolution = Env.borrowSolution(counts.length, maxR);
 
         addSolution(currLayerSolutions, currSolution, 0);

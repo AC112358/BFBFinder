@@ -130,7 +130,7 @@ public class Simulator {
 
     public static void printRatios(double n) {
         double factor = 4.0 / n / n;
-        List<Long> ratios = new ArrayList<Long>();
+        List<Long> ratios = new ArrayList<>();
         long currRatio = 0;
         for (int i = 1; i < n; ++i) {
             long ratio = Math.round(i / (n - i) * 2);

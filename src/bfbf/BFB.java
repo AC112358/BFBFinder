@@ -86,7 +86,7 @@ public class BFB {
     private static final String VERBOSE = "b";
 
     private static final Weights[] weightsBox = new Weights[1];
-    private static final Comparator<? super int[]> weightComparator = new Comparator<int[]>() {
+    private static final Comparator<? super int[]> weightComparator = new Comparator<>() {
 
         @Override
         public int compare(int[] first, int[] second) {
@@ -379,8 +379,8 @@ public class BFB {
 
     public static List<BFBPalindrome> allBFBPalindormes(Weights w, double minWeight, int minLength) {
         List<SigCurve> oracles = SigCurve.sigCurves(w, minWeight);
-        List<PalindromeCollection> prevCollections = new ArrayList<PalindromeCollection>();
-        List<PalindromeCollection> currCollections = new ArrayList<PalindromeCollection>();
+        List<PalindromeCollection> prevCollections = new ArrayList<>();
+        List<PalindromeCollection> currCollections = new ArrayList<>();
         List<PalindromeCollection> tmpCollections;
         currCollections.add(new PalindromeCollection());
 
@@ -422,7 +422,7 @@ public class BFB {
         }
 
 
-        List<BFBPalindrome> palindromes = new ArrayList<BFBPalindrome>();
+        List<BFBPalindrome> palindromes = new ArrayList<>();
         for (PalindromeCollection collection : prevCollections) {
             assert collection.size() == 1;
             palindromes.add(collection.get(0));

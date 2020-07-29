@@ -35,7 +35,7 @@ import java.util.List;
 public class Block extends BFBPalindrome {
 
     private static final Block cashKey = new Block(null);
-    private static final List<Palindrome> pool = new ArrayList<Palindrome>();
+    private static final List<Palindrome> pool = new ArrayList<>();
     private static final PalindromeFactory<Block> factory = new BlockFactory();
 
     protected Block(Palindrome internal) {

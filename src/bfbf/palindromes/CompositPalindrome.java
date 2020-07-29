@@ -35,7 +35,7 @@ import java.util.List;
 public class CompositPalindrome extends BFBPalindrome {
 
     private static final CompositPalindrome cashKey = new CompositPalindrome(null, null);
-    private static final List<Palindrome> pool = new ArrayList<Palindrome>();
+    private static final List<Palindrome> pool = new ArrayList<>();
     private static final PalindromeFactory<CompositPalindrome> factory =
             new CompositeFactory();
 

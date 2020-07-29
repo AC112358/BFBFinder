@@ -83,7 +83,7 @@ public class RandomSampleGenerator {
         }
 
         SegmentedChromosome genome = new SegmentedChromosome(genomeLength, ploidy);
-        List<Integer> operations = new ArrayList<Integer>();
+        List<Integer> operations = new ArrayList<>();
 
 
         for (int i = 0; i < iters; ++i) {
@@ -403,7 +403,7 @@ public class RandomSampleGenerator {
     }
 
     private static Map<String, String> readConfiguration(String[] args) {
-        Map<String, String> config = new HashMap<String, String>();
+        Map<String, String> config = new HashMap<>();
         readConfiguration(args, config);
         return config;
     }
