@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,13 +24,12 @@
 package bfbf.weights;
 
 /**
- * An error model that allows no deviation from the input counts. 
- * 
- * @author zakov
+ * An error model that allows no deviation from the input counts.
  *
+ * @author zakov
  */
 public class NoErrorModel extends ErrorModel {
-	
+
 //	@Override
 //	public double error(int realValue, int observedValue) {
 //		if (observedValue != realValue){
@@ -38,27 +37,27 @@ public class NoErrorModel extends ErrorModel {
 //		}
 //		else return 0;
 //	}
-	
-	public String toString(){
-		return "no error";
-	}
+
+    public String toString() {
+        return "no error";
+    }
 
 //	@Override
 //	public double accumulate(double accumulatedError, double newError) {
 //		return accumulatedError + newError;
 //	}
 
-	@Override
-	public int minRealValue(int observedValue, double maxCurrError) {
-		return observedValue;
-	}
+    @Override
+    public int minRealValue(int observedValue, double maxCurrError) {
+        return observedValue;
+    }
 
-	@Override
-	public int maxRealValue(int observedValue, double maxCurrError) {
-		return observedValue;
-	}
+    @Override
+    public int maxRealValue(int observedValue, double maxCurrError) {
+        return observedValue;
+    }
 
-//	@Override
+    //	@Override
 //	public double maxCurrError(double accumulatedError, double maxError) {
 //		return 0;
 //	}
@@ -75,13 +74,12 @@ public class NoErrorModel extends ErrorModel {
 //		return normlizedError;
 //	}
 //
-	@Override
-	public double weight(int trueCount, int estimatedCount) {
-		if (trueCount == estimatedCount){
-			return 1;
-		}
-		else return 0;
-	}
+    @Override
+    public double weight(int trueCount, int estimatedCount) {
+        if (trueCount == estimatedCount) {
+            return 1;
+        } else return 0;
+    }
 
 //	@Override
 //	@Deprecated

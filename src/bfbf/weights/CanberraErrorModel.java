@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,10 +26,9 @@ package bfbf.weights;
 /**
  * The distance between an observed value q and a real value r is defined by
  * |r - q| / (r + q). The distance between two vectors is defined to be the
- * sum of entry-wise distances. 
- * 
- * @author Shay Zakov
+ * sum of entry-wise distances.
  *
+ * @author Shay Zakov
  */
 public class CanberraErrorModel extends ErrorModel {
 
@@ -44,23 +43,23 @@ public class CanberraErrorModel extends ErrorModel {
 //		return accumulatedError + newError;
 //	}
 
-	@Override
-	public double weight(int trueCount, int estimatedCount) {
-		return 1 - Math.abs(trueCount - estimatedCount) /
-				((double) trueCount + estimatedCount);
-	}
+    @Override
+    public double weight(int trueCount, int estimatedCount) {
+        return 1 - Math.abs(trueCount - estimatedCount) /
+                ((double) trueCount + estimatedCount);
+    }
 
-	@Override
-	public int minRealValue(int observedValue, double maxCurrError) {
-		return (int) Math.max(1, 
-				Math.ceil(observedValue*(1-maxCurrError)/(1+maxCurrError)));
-	}
+    @Override
+    public int minRealValue(int observedValue, double maxCurrError) {
+        return (int) Math.max(1,
+                Math.ceil(observedValue * (1 - maxCurrError) / (1 + maxCurrError)));
+    }
 
-	@Override
-	public int maxRealValue(int observedValue, double maxCurrError) {
-		return (int) Math.min(3*observedValue, 
-				Math.floor(observedValue*(1+maxCurrError)/(1-maxCurrError)));
-	}
+    @Override
+    public int maxRealValue(int observedValue, double maxCurrError) {
+        return (int) Math.min(3 * observedValue,
+                Math.floor(observedValue * (1 + maxCurrError) / (1 - maxCurrError)));
+    }
 
 //	@Override
 //	public double maxCurrError(double accumulatedError, double maxError) {

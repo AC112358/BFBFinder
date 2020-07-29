@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,14 +26,11 @@ package bfbf.weights;
 /**
  * For a maximum relative error {@code m}, the ratio between a pertubated value
  * {@code q} and the real value {@code r} satisfies {@code 1/(1+m) <= q/r <= 1+m}.
- * 
- * 
- * 
- * @author Shay Zakov
  *
+ * @author Shay Zakov
  */
 public class MaxRelativeErrorModel extends ErrorModel {
-	
+
 //	@Override
 //	public double error(int realValue, int observedValue) {
 //		if (observedValue <= realValue){
@@ -47,23 +44,22 @@ public class MaxRelativeErrorModel extends ErrorModel {
 //		return Math.max(accumulatedError, newError);
 //	}
 
-	@Override
-	public double weight(int trueCount, int estimatedCount) {
-		if (estimatedCount >= trueCount){
-			return ((double) trueCount)/estimatedCount;
-		}
-		else return ((double) estimatedCount)/trueCount;
-	}
+    @Override
+    public double weight(int trueCount, int estimatedCount) {
+        if (estimatedCount >= trueCount) {
+            return ((double) trueCount) / estimatedCount;
+        } else return ((double) estimatedCount) / trueCount;
+    }
 
-	@Override
-	public int minRealValue(int observedValue, double maxCurrError) {
-		return (int) Math.ceil((observedValue/(1+maxCurrError)));
-	}
+    @Override
+    public int minRealValue(int observedValue, double maxCurrError) {
+        return (int) Math.ceil((observedValue / (1 + maxCurrError)));
+    }
 
-	@Override
-	public int maxRealValue(int observedValue, double maxCurrError) {
-		return (int) Math.floor((observedValue*(1+maxCurrError)));
-	}
+    @Override
+    public int maxRealValue(int observedValue, double maxCurrError) {
+        return (int) Math.floor((observedValue * (1 + maxCurrError)));
+    }
 
 //	@Override
 //	public double maxCurrError(double accumulatedError, double maxError) {

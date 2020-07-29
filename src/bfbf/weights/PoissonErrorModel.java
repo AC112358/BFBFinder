@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,58 +26,56 @@ package bfbf.weights;
 
 /**
  * A Poisson-based error model. The Poisson probability of observing q when the
- * observation mean is r is defined by P(X = q | r) = r^q * e^{-r} / q!. The 
+ * observation mean is r is defined by P(X = q | r) = r^q * e^{-r} / q!. The
  * distance of q from r is defined by dist(q,r) = P(X = q | r) / P(X = r | r).
  * The distance between two vectors is the product of their entry-wise distances.
- *  
- * 
- * @author Shay Zakov
  *
+ * @author Shay Zakov
  */
 public class PoissonErrorModel extends ErrorModel {
 
-	private static final double HALF_LOG_PI = Math.log(Math.PI) / 2.;
-	private static final double[] factLans  = {0, 0, Math.log(2), Math.log(6), 
-		Math.log(24), Math.log(120), Math.log(720), Math.log(5040), 
-		Math.log(40320), Math.log(362880), Math.log(3628800), Math.log(39916800)};
-	private static final int computedLans = factLans.length;
+    private static final double HALF_LOG_PI = Math.log(Math.PI) / 2.;
+    private static final double[] factLans = {0, 0, Math.log(2), Math.log(6),
+            Math.log(24), Math.log(120), Math.log(720), Math.log(5040),
+            Math.log(40320), Math.log(362880), Math.log(3628800), Math.log(39916800)};
+    private static final int computedLans = factLans.length;
 
-	@Override
-	public double weight(int trueCount, int estimatedCount) {
-		return Math.exp(poissonProbabilityApproximation(trueCount+0.5, estimatedCount)
-				- poissonProbabilityApproximation(trueCount+0.5, trueCount));
-	}
+    /**
+     * Calculates an approximation of the log of a Poisson probability.
+     *
+     * @param mean     - lambda, the average number of occurrences.
+     * @param observed - the actual number of occurrences observed.
+     * @return ln(Poisson probability) - the natural log of the probability a
+     * random variable, distributed according to the Poisson probability with
+     * parameter {@code lambda = mean}, gets the value {@code observed}.
+     */
+    public static double poissonProbabilityApproximation(double mean, int observed) {
+        return observed * Math.log(mean) - mean - factorialApproximation(observed);
+    }
 
-	public String toString(){
-		return "Poisson errors";
-	}
+    /**
+     * Srinivasa Ramanujan ln(n!) factorial estimation.
+     * Good for larger values of n.
+     *
+     * @param n a nonnegative integer (exception is thrown for negative values!).
+     * @return ln(n !)
+     */
+    public static double factorialApproximation(int n) {
+        if (n < computedLans) return factLans[n];
+        double a = n * Math.log(n) - n;
+        double b = Math.log(n * (1. + 4. * n * (1. + 2. * n))) / 6.;
+        return a + b + HALF_LOG_PI;
+    }
 
-	/**
-	 * Calculates an approximation of the log of a Poisson probability.
-	 * 
-	 * @param mean - lambda, the average number of occurrences.
-	 * @param observed - the actual number of occurrences observed.
-	 * @return ln(Poisson probability) - the natural log of the probability a 
-	 * random variable, distributed according to the Poisson probability with
-	 * parameter {@code lambda = mean}, gets the value {@code observed}.
-	 */
-	public static double poissonProbabilityApproximation (double mean, int observed) {
-	        return observed * Math.log(mean) - mean - factorialApproximation(observed);
-	}
-	 
-	/**
-	 * Srinivasa Ramanujan ln(n!) factorial estimation.
-	 * Good for larger values of n.
-	 * 
-	 * @param n a nonnegative integer (exception is thrown for negative values!).
-	 * @return ln(n!)
-	 */
-	public static double factorialApproximation(int n) {
-	        if (n < computedLans) return factLans[n];
-	        double a = n * Math.log(n) - n;
-	        double b = Math.log(n * (1. + 4. * n * (1. + 2. * n))) / 6.;
-	        return a + b + HALF_LOG_PI;
-	}
+    @Override
+    public double weight(int trueCount, int estimatedCount) {
+        return Math.exp(poissonProbabilityApproximation(trueCount + 0.5, estimatedCount)
+                - poissonProbabilityApproximation(trueCount + 0.5, trueCount));
+    }
+
+    public String toString() {
+        return "Poisson errors";
+    }
 
 //	@Override
 //	public void getCountWeights(int[] expectedCounts, int[] minCounts,
@@ -139,5 +137,5 @@ public class PoissonErrorModel extends ErrorModel {
 //			}
 //		}
 //	}
-	
+
 }

@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,23 +26,22 @@ package bfbf.instance_generation;
 import java.util.Random;
 
 /**
- * A random genome generator who applies uniform distribution for choosing 
- * positions of rearrangement events. 
- * 
- * @author Shay Zakov
+ * A random genome generator who applies uniform distribution for choosing
+ * positions of rearrangement events.
  *
+ * @author Shay Zakov
  */
 public class UniformBreakageGenerator implements BfbBreakageGenerator {
 
-	private Random random;
+    private Random random;
 
-	public UniformBreakageGenerator(Random random) {
-		this.random = random;
-	}
+    public UniformBreakageGenerator(Random random) {
+        this.random = random;
+    }
 
-	@Override
-	public double randomBreakPosition() {
-		return random.nextDouble();
-	}
+    @Override
+    public double randomBreakPosition() {
+        return random.nextDouble();
+    }
 
 }

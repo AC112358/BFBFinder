@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,46 +27,45 @@ import java.util.List;
 
 /**
  * An empty palindrome implementation of the abstract Palindrome class.
- * 
- * @author Shay Zakov
  *
+ * @author Shay Zakov
  */
 public class EmptyPalindrome extends BFBPalindrome {
-	
-	public static final EmptyPalindrome SINGLETON = new EmptyPalindrome();
 
-	private EmptyPalindrome(){
-		super(null, null);
-	}
+    public static final EmptyPalindrome SINGLETON = new EmptyPalindrome();
 
-	public boolean equals(Object other){
-		return other == SINGLETON;
-	}
+    private EmptyPalindrome() {
+        super(null, null);
+    }
 
-	@Override
-	public int centerDeg() {
-		return 0;
-	}
+    public boolean equals(Object other) {
+        return other == SINGLETON;
+    }
 
-	@Override
-	public int minPartDepth() {
-		return 0;
-	}
+    @Override
+    public int centerDeg() {
+        return 0;
+    }
 
-	@Override
-	public List<Palindrome> pool() {
-		return null;
-	}
+    @Override
+    public int minPartDepth() {
+        return 0;
+    }
 
-	@Override
-	protected Palindrome primary() {
-		return null;
-	}
+    @Override
+    public List<Palindrome> pool() {
+        return null;
+    }
 
-	@Override
-	protected Palindrome secondary() {
-		return null;
-	}
+    @Override
+    protected Palindrome primary() {
+        return null;
+    }
+
+    @Override
+    protected Palindrome secondary() {
+        return null;
+    }
 
 
 }

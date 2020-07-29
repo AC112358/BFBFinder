@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,105 +25,101 @@ package bfbf.weights;
 
 /**
  * An abstract error model.
- * 
- * @author Shay Zakov
  *
+ * @author Shay Zakov
  */
 public abstract class ErrorModel {
 
-	private static int MAX_RATIO = 2; 
+    private static int MAX_RATIO = 2;
 
-	/**
-	 * Computing the weight of an estimated count, given a true count. 
-	 * 
-	 * @param trueCount the number of times a segment repeats in a chromosome.
-	 * @param estimatedCount the number of times the segment was estimated to
-	 * repeat in the chromosome.
-	 * @return a weight reflecting the probability to call the (possibly wrong) 
-	 * estimated count, given that the true count is the correct one.
-	 */
-	public abstract double weight(int trueCount, int estimatedCount);
+    /**
+     * Computing the weight of an estimated count, given a true count.
+     *
+     * @param trueCount      the number of times a segment repeats in a chromosome.
+     * @param estimatedCount the number of times the segment was estimated to
+     *                       repeat in the chromosome.
+     * @return a weight reflecting the probability to call the (possibly wrong)
+     * estimated count, given that the true count is the correct one.
+     */
+    public abstract double weight(int trueCount, int estimatedCount);
 
-	/**
-	 * Returns a Weights object for a count estimation vector.
-	 * 
-	 * @param counts an integer vector with segment count estimations.
-	 * @param minWeight a bound to the
-	 * @return
-	 */
-	public Weights getWeights(int[] counts, double minWeight){
-		Weights w = new Weights(counts.length);
-		for (int i=0; i<counts.length; ++i){
-			int minValue = minRealValue(counts[i], minWeight);
-			int maxValue = maxRealValue(counts[i], minWeight);
-			double[] countWeights = new double[maxValue - minValue + 1];
-			for (int j = minValue; j <= maxValue; ++j){
-				countWeights[j - minValue] = weight(j, counts[i]);
-			}
-			w.setWeights(i, minValue, countWeights);
-		}
-		return w;
-	}
+    /**
+     * Returns a Weights object for a count estimation vector.
+     *
+     * @param counts    an integer vector with segment count estimations.
+     * @param minWeight a bound to the
+     * @return
+     */
+    public Weights getWeights(int[] counts, double minWeight) {
+        Weights w = new Weights(counts.length);
+        for (int i = 0; i < counts.length; ++i) {
+            int minValue = minRealValue(counts[i], minWeight);
+            int maxValue = maxRealValue(counts[i], minWeight);
+            double[] countWeights = new double[maxValue - minValue + 1];
+            for (int j = minValue; j <= maxValue; ++j) {
+                countWeights[j - minValue] = weight(j, counts[i]);
+            }
+            w.setWeights(i, minValue, countWeights);
+        }
+        return w;
+    }
 
 
-	/**
-	 * Computing a lower bound over a true segment count, given an estimated 
-	 * count and a minimum estimation weight.
-	 *  
-	 * @param estimatedCount an (experimentally) estimated segment count.
-	 * @param minWeight a minimum estimation weight.
-	 * @return the minimum true count such that the estimated count weight is 
-	 * at least the given minimum weight.
-	 */
-	public int minRealValue(int estimatedCount, double minWeight){
-		int deltaMax = estimatedCount, deltaMin=0, deltaMid;
-		
-		// Invariant: estimatedCount - deltaMax is an invalid true count, 
-		// estimatedCount - deltaMin is a valid true count.
-		while(deltaMax - deltaMin > 1){
-			deltaMid = (deltaMax + deltaMin)/2;
-			if (weight(estimatedCount - deltaMid, estimatedCount) >= minWeight){
-				deltaMin = deltaMid;
-			}
-			else deltaMax = deltaMid;
-		}
-		return estimatedCount - deltaMin; 
-	}
+    /**
+     * Computing a lower bound over a true segment count, given an estimated
+     * count and a minimum estimation weight.
+     *
+     * @param estimatedCount an (experimentally) estimated segment count.
+     * @param minWeight      a minimum estimation weight.
+     * @return the minimum true count such that the estimated count weight is
+     * at least the given minimum weight.
+     */
+    public int minRealValue(int estimatedCount, double minWeight) {
+        int deltaMax = estimatedCount, deltaMin = 0, deltaMid;
 
-	/**
-	 * Computing an upper bound over a true segment count, given an estimated 
-	 * count and a minimum estimation weight.
-	 *  
-	 * @param estimatedCount an (experimentally) estimated segment count.
-	 * @param minWeight a minimum estimation weight.
-	 * @return the maximum true count such that the estimated count weight is 
-	 * at least the given minimum weight.
-	 */
-	public int maxRealValue(int estimatedCount, double minWeight){
-		int deltaMax=1, deltaMin=0, deltaMid;
+        // Invariant: estimatedCount - deltaMax is an invalid true count,
+        // estimatedCount - deltaMin is a valid true count.
+        while (deltaMax - deltaMin > 1) {
+            deltaMid = (deltaMax + deltaMin) / 2;
+            if (weight(estimatedCount - deltaMid, estimatedCount) >= minWeight) {
+                deltaMin = deltaMid;
+            } else deltaMax = deltaMid;
+        }
+        return estimatedCount - deltaMin;
+    }
 
-		// Invariant: estimatedCount + deltaMin is a valid true count.
-		while (weight(estimatedCount + deltaMax, estimatedCount) >= minWeight){
-			deltaMin = deltaMax;
-			deltaMax *= 2;
-		}
+    /**
+     * Computing an upper bound over a true segment count, given an estimated
+     * count and a minimum estimation weight.
+     *
+     * @param estimatedCount an (experimentally) estimated segment count.
+     * @param minWeight      a minimum estimation weight.
+     * @return the maximum true count such that the estimated count weight is
+     * at least the given minimum weight.
+     */
+    public int maxRealValue(int estimatedCount, double minWeight) {
+        int deltaMax = 1, deltaMin = 0, deltaMid;
 
-		// Invariant: estimatedCount + deltaMax is an invalid true count, 
-		// estimatedCount + deltaMin is a valid true count.
-		while(deltaMax - deltaMin > 1){
-			deltaMid = (deltaMax + deltaMin)/2;
-			if (weight(estimatedCount + deltaMid, estimatedCount) >= minWeight){
-				deltaMin = deltaMid;
-			}
-			else deltaMax = deltaMid;
-		}
+        // Invariant: estimatedCount + deltaMin is a valid true count.
+        while (weight(estimatedCount + deltaMax, estimatedCount) >= minWeight) {
+            deltaMin = deltaMax;
+            deltaMax *= 2;
+        }
 
-		return estimatedCount + deltaMin;
-	}
-	
-	
-	
-	//DEPRECATED:
+        // Invariant: estimatedCount + deltaMax is an invalid true count,
+        // estimatedCount + deltaMin is a valid true count.
+        while (deltaMax - deltaMin > 1) {
+            deltaMid = (deltaMax + deltaMin) / 2;
+            if (weight(estimatedCount + deltaMid, estimatedCount) >= minWeight) {
+                deltaMin = deltaMid;
+            } else deltaMax = deltaMid;
+        }
+
+        return estimatedCount + deltaMin;
+    }
+
+
+    //DEPRECATED:
 
 //	@Deprecated
 //	public abstract double error(int realValue, int observedValue);

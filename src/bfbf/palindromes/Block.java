@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,80 +29,87 @@ import java.util.List;
 
 /**
  * An l-block implementation of the abstract Palindrome class.
- * 
- * @author Shay Zakov
  *
+ * @author Shay Zakov
  */
 public class Block extends BFBPalindrome {
 
-	private static final Block cashKey = new Block(null);
-	private static final List<Palindrome> pool = new ArrayList<Palindrome>();
-	private static final PalindromeFactory<Block> factory = new BlockFactory();
-	
-	public static Block make(BFBPalindrome center){
-		return make(center, null, cashKey, factory);
-	}
+    private static final Block cashKey = new Block(null);
+    private static final List<Palindrome> pool = new ArrayList<Palindrome>();
+    private static final PalindromeFactory<Block> factory = new BlockFactory();
 
-	protected Block(Palindrome internal){
-		super(internal, null);
-	}
-	
-	@Override
-	protected void fillCounts(int[] counts, int base, int factor){
-		counts[base] += factor;
-		if (center != null){
-			center.fillCounts(counts, base+1, factor);
-		}
-	}
+    protected Block(Palindrome internal) {
+        super(internal, null);
+    }
 
-	@Override
-	protected int classCompareTo(Palindrome other) {
-		if (other instanceof Block) return center.compareTo(other.center);
-		else return -1;
-	}
+    public static Block make(BFBPalindrome center) {
+        return make(center, null, cashKey, factory);
+    }
 
-	@Override
-	protected int fillSeq(int[] seq, int base, int startIx) {
-		int length = length();
-		seq[startIx] = base;
-		seq[startIx + length-1] = base;
-		center.fillSeq(seq, base+1, startIx+1);
-		return length;
-	}
+    @Override
+    protected void fillCounts(int[] counts, int base, int factor) {
+        counts[base] += factor;
+        if (center != null) {
+            center.fillCounts(counts, base + 1, factor);
+        }
+    }
 
-	@Override
-	public int centerDeg() {
-		return 0;
-	}
+    @Override
+    protected int classCompareTo(Palindrome other) {
+        if (other instanceof Block) return center.compareTo(other.center);
+        else return -1;
+    }
 
-	@Override
-	public int minPartDepth() {
-		return depth();
-	}
-	
-	@Override 
-	public int length(){
-		return center.length()+2;
-	}
+    @Override
+    protected int fillSeq(int[] seq, int base, int startIx) {
+        int length = length();
+        seq[startIx] = base;
+        seq[startIx + length - 1] = base;
+        center.fillSeq(seq, base + 1, startIx + 1);
+        return length;
+    }
 
-	@Override 
-	public int depth(){
-		return center.depth()+1;
-	}
+    @Override
+    public int centerDeg() {
+        return 0;
+    }
 
-	@Override
-	public List<Palindrome> pool() {
-		return pool;
-	}
+    @Override
+    public int minPartDepth() {
+        return depth();
+    }
 
-	@Override
-	protected Palindrome primary() {
-		return center;
-	}
+    @Override
+    public int length() {
+        return center.length() + 2;
+    }
 
-	@Override
-	protected Palindrome secondary() {
-		return center;
-	}
+    @Override
+    public int depth() {
+        return center.depth() + 1;
+    }
 
+    @Override
+    public List<Palindrome> pool() {
+        return pool;
+    }
+
+    @Override
+    protected Palindrome primary() {
+        return center;
+    }
+
+    @Override
+    protected Palindrome secondary() {
+        return center;
+    }
+
+    public static class BlockFactory extends PalindromeFactory<Block> {
+
+        @Override
+        public Block make(Palindrome center, Palindrome wrap) {
+            return new Block(center);
+        }
+
+    }
 }

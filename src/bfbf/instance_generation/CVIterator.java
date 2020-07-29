@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,53 +29,51 @@ import java.util.Iterator;
 /**
  * An iterator over all count vectors of certain length k and maximum entry
  * value n.
- * 
- * 
- * @author Shay Zakov
  *
+ * @author Shay Zakov
  */
 public class CVIterator implements Iterator<int[]> {
 
-	private int[] next;
-	private int k, n, currSum, maxFirst;
+    private int[] next;
+    private int k, n, currSum, maxFirst;
 
-	public CVIterator(int k, int n){
-		assert n >= k;
-		this.k = k;
-		this.n = n;
-		maxFirst = n - k + 1;
-		next = new int[k];
-		Arrays.fill(next, 1);
-		currSum = k-2;
-		next[k-2] = 0;
-	}
+    public CVIterator(int k, int n) {
+        assert n >= k;
+        this.k = k;
+        this.n = n;
+        maxFirst = n - k + 1;
+        next = new int[k];
+        Arrays.fill(next, 1);
+        currSum = k - 2;
+        next[k - 2] = 0;
+    }
 
-	@Override
-	public boolean hasNext() {
-		return next[0] < maxFirst;
-	}
+    @Override
+    public boolean hasNext() {
+        return next[0] < maxFirst;
+    }
 
-	@Override
-	public int[] next() {
-		int l = k-2;
+    @Override
+    public int[] next() {
+        int l = k - 2;
 
-		if (currSum == n-1){
-			for (; next[l] == 1; --l){
-				next[l] = 1;
-			}
-			currSum -= next[l]-1;
-			next[l] = 1;
-			--l;
-		}
+        if (currSum == n - 1) {
+            for (; next[l] == 1; --l) {
+                next[l] = 1;
+            }
+            currSum -= next[l] - 1;
+            next[l] = 1;
+            --l;
+        }
 
-		++next[l];
-		++currSum;
-		next[k-1] = n - currSum;
-		return next;
-	}
+        ++next[l];
+        ++currSum;
+        next[k - 1] = n - currSum;
+        return next;
+    }
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

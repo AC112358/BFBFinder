@@ -8,7 +8,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The bfb package is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,12 +25,11 @@ package bfbf.instance_generation;
 
 /**
  * An interface for genome breakage position generator.
- * 
- * @author Shay Zakov
  *
+ * @author Shay Zakov
  */
 public interface BfbBreakageGenerator {
 
-	double randomBreakPosition();
+    double randomBreakPosition();
 
 }
