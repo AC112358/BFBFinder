@@ -1,4 +1,4 @@
-# BFBFinder
+# BFB Finder
 ## Breakage Fusion Bridge detection algorithms
 
 The BFB Finder project provides algorithms for detecting evidence for Breakage Fusion Bridge (BFB) genome rearrangement events given genomic segment copy numbers. In particular, given (exact or noisy) segment count vectors, it allows (a) deciding if the input may be produced by BFB, (b) output one or the subset of all BFB count vectors of the input (noisy counts only), and (c) output one or the set of all BFB architectures supporting the input.
@@ -12,28 +12,35 @@ The implemented algorithms were described in the following papers:
 If you publish results obtained by using BFB Finder, we would appreciate if your publication contains citations of these paper. 
 
 
+### Prerequisites:
+
+- Java (see https://www.oracle.com/java/technologies/javase-downloads.html for installation instructions).
+- Optional: git client (for downloading the project)
+
 ### Installation:
 
-1. Open a terminal window and set current directory to where you would like to install BFB Finder, e.g. `/home/my_username/projects`.
-2. Run `git clone https://github.com/shay-zakov/BFBFinder`.
-3. Change directory to `BFBFinder`.
-4. Run `gradle build`
-4. To check if build was successful, run `java -jar ./build/libs/BFBFinder-0.1.0.jar -s -a [4,4,4]`.
-Expected output should be 
-
-    ABCCBAABCCBA
-    
-    ABCCBBCCBAAA
-    
+1. Source code may either be obtained by git-cloning this repository (preferred for developers), or by simply 
+downloading it as a zip file (in case you are only interested in running the current version of the code).
+For the latter option, click the `Code` button at the top of the main repository web page 
+(https://github.com/shay-zakov/BFBFinder) and choose "Download ZIP". For cloning the git repository, do the following: 
+    1. Open a terminal window and set the current directory to where you would like to install BFB Finder, e.g. `/home/my_username/projects`.
+    1. Run `git clone https://github.com/shay-zakov/BFBFinder`.
+2. Change directory to the project's root folder (should be `BFBFinder` when cloning with git, or `BFBFinder-master` if 
+extracting the downloaded zip file).
+4. Run `./gradlew build`
+4. To check if build was successful, run `gradlew run --args="-s -a [4,4,4]"`.
+The output should contain the following lines: 
+    ```
+    ABCCBAABCCBA    
+    ABCCBBCCBAAA    
     ABCCCCBAABBA
+   Total number of strings: 3
+   ```
     
-    Total number of strings: 3
-
-
-
 ### Running:
 
-Run `java -jar <path to BFB Finder jar>/BFBFinder-0.1.0.jar <argument list>`
+After building the project, a runnable `BFBFinder.jar` file should be created under the `build/libs` folder. Change 
+the current directory to `build/libs`, and run `java -jar BFBFinder.jar <argument list>`.
 
 Main arguments:
 
@@ -43,7 +50,7 @@ Main arguments:
 
 • If an `-a` argument is supplied, all solutions are returned, and otherwise a single solution is returned ("Decision" mode ignores this argument).
 
-• To set error bounds, use `-e=<error model class name>` and `-w=<min weight>`. Error model class names are NoErrorModel (default), PoissonErrorModel, MaxRelativeErrorModel, and CanberraErrorModel. The min weight value should be set between 0 (don't do that!) and 1. In short, a value of 1 allows no errors, while the closer the value is to 0 more errors are allowed. Good chances there are still some bugs in this mechanism.
+• To set error bounds, use `-e=<error model class name>` and `-w=<min weight>`. Error model class names are NoErrorModel (default), PoissonErrorModel, MaxRelativeErrorModel, and CanberraErrorModel. The min weight value should be set between 0 (don't do that!) and 1. In short, a value of 1 allows no errors, while the closer the value is to 0 more errors are allowed. 
 
 Some examples of possible arguments:
 
