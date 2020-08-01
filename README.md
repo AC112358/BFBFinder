@@ -7,7 +7,7 @@ The implemented algorithms were described in the following papers:
 
 1. Algorithms for BFB detection in tumor genomes. Shay Zakov, Marcus Kinsella, and Vineet Bafna. Proceedings of the National Academy of Sciences Apr 2013, 110 (14) 5546-5551; DOI: 10.1073/pnas.1220977110 
 
-2. Reconstructing breakage fusion bridge architectures using noisy copy numbers. Shay Zakov and Vineet Bafna. Journal of Computational Biology. Jun 2015.577-594. http://doi.org/10.1089/cmb.2014.0166
+2. Reconstructing breakage fusion bridge architectures using noisy copy numbers. Shay Zakov and Vineet Bafna. Journal of Computational Biology. Jun 2015. 577-594. http://doi.org/10.1089/cmb.2014.0166
 
 If you publish results obtained by using BFB Finder, we would appreciate if your publication contains citations of these paper. 
 
@@ -15,7 +15,7 @@ If you publish results obtained by using BFB Finder, we would appreciate if your
 ### Prerequisites:
 
 - Java (see https://www.oracle.com/java/technologies/javase-downloads.html for installation instructions).
-- Optional: git client (for downloading the project)
+- Optional: a git client (for downloading the project).
 
 ### Installation:
 
@@ -28,7 +28,7 @@ For the latter option, click the `Code` button at the top of the main repository
 2. Change directory to the project's root folder (should be `BFBFinder` when cloning with git, or `BFBFinder-master` if 
 extracting the downloaded zip file).
 4. Run `./gradlew build`
-4. To check if build was successful, run `gradlew run --args="-s -a [4,4,4]"`.
+4. To check if build was successful, run `./gradlew run --args="-s -a [4,4,4]"`.
 The output should contain the following lines: 
     ```
     ABCCBAABCCBA    
