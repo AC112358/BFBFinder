@@ -54,6 +54,7 @@ counts, according to the Poisson error model:
 import bfbf.palindromes.BFBPalindrome;
 import bfbf.palindromes.PalindromeCollection;
 import bfbf.weights.ErrorModel;
+import bfbf.weights.FbrWeights;
 import bfbf.weights.NoErrorModel;
 import bfbf.weights.Weights;
 import gnu.trove.list.TDoubleList;
@@ -78,6 +79,10 @@ public class BFB {
     private static final String MIN_WEIGHT = "w";
     private static final String ALL = "a";
     private static final String SUBSTRING = "l";
+
+    private static final String FOLDBACK = "f";
+    private static final String FBR_ERROR_MODEL = "fe";
+    private static final String FBR_MIN_WEIGHT = "fw";
 
     //	private static final String INPUT = "in";
     //	private static final String OUTPUT = "out";
@@ -135,6 +140,23 @@ public class BFB {
         substringOption.setValueSeparator('=');
         substringOption.setArgName("minLength");
         options.addOption(substringOption);
+
+        Option fbrVectorOption = new Option(FOLDBACK, true,
+                "Foldback read vector");
+        fbrVectorOption.setValueSeparator('=');
+        fbrVectorOption.setArgName("foldbackCounts");
+        options.addOption(fbrVectorOption);
+
+        Option fbrWeightOption = new Option(FBR_MIN_WEIGHT, true,
+                "Minimum solution foldback read weight");
+        fbrWeightOption.setValueSeparator('=');
+        fbrWeightOption.setArgName("minFbrWeight");
+        options.addOption(fbrWeightOption);
+
+        Option fbrErrorOption = new Option(FBR_ERROR_MODEL, true, "Foldback reads error model");
+        fbrErrorOption.setValueSeparator('=');
+        fbrErrorOption.setArgName("fbrErrorModel");
+        options.addOption(fbrErrorOption);
 
         options.addOption(HELP, false, "Show help");
 
@@ -442,9 +464,34 @@ public class BFB {
         allBFBStrings(w, minWeight, minLength, System.out, maxStrings);
     }
 
+
+
+    public static void allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight, int minLength) {
+        allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, System.out, -1);
+    }
+
+    public static void allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight,
+                                     int minLength, PrintStream stream) {
+        allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, stream, -1);
+    }
+
+    public static void allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight,
+                                     int minLength, int maxStrings) {
+        allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, System.out, maxStrings);
+    }
+
     public static void allBFBStrings(Weights w, double minWeight, int minLength, PrintStream stream, int maxStrings) {
-        AllBFBStringPrinter handler = new AllBFBStringPrinter(w, 0, w.length(), minWeight, stream, maxStrings);
-        handler.handle(new PalindromeCollection(), w.length() - 1, 1);
+        AllBFBStringPrinter handler = new AllBFBStringPrinter(w, null, 0, w.length(), minWeight, 0,
+                stream, maxStrings);
+        handler.handle(new PalindromeCollection(), w.length() - 1, 1, 1);
+        stream.println("Total number of strings: " + handler.numOfStrings());
+    }
+
+    public static void allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight, int minLength,
+                                     PrintStream stream, int maxStrings) {
+        AllBFBStringPrinter handler = new AllBFBStringPrinter(w, fw, 0, w.length(), minWeight, minFbrWeight,
+                stream, maxStrings);
+        handler.handle(new PalindromeCollection(), w.length() - 1, 1, 1);
         stream.println("Total number of strings: " + handler.numOfStrings());
     }
 
