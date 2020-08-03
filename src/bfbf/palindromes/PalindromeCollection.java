@@ -567,7 +567,13 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
         }
     }
 
-    public boolean allFoldings1(FoldingHandler foldingHandler, double currWeight, double currFbrWeight,
+    public boolean allFoldings1(FoldingHandler foldingHandler, double currWeight,
+                                Weights w, int l, double minWeight, SigCurve sigOracle, Signature sig) {
+
+        return allFoldingsSelectCenters1(foldingHandler, w, l, currWeight, minWeight, sigOracle, lastBlock(),
+                getFirst(), 0, sig, false, new PalindromeCollection());
+    }
+    public boolean allFoldings1(FoldingHandler1  foldingHandler, double currWeight, double currFbrWeight,
                                 Weights w, FbrWeights fw, int l, double minWeight, double minFbrWeight,
                                 SigCurve sigOracle, Signature sig) {
 
@@ -588,11 +594,8 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
 
 
     //	-------------------------------------------------------------------
-
     private boolean allFoldingsSelectCenters1(FoldingHandler foldingHandler,
-                                              Weights w, FbrWeights fw, int l, 
-											  double currWeight, double currFbrWeight,
-											  double minWeight, double minFbrWeight,
+                                              Weights w, int l, double currWeight, double minWeight,
                                               SigCurve sigOracle, Block currWrap, BFBPalindrome currCenter,
                                               int currCenterDeg, Signature sig, boolean centerDegIncreased,
                                               PalindromeCollection expandable) {
@@ -606,27 +609,19 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
             double nextMinWeight = minWeight / currWeight;
             int minSize = w.getMinCount(l, nextMinWeight);
             int maxSize = w.getMaxCount(l, nextMinWeight);
-			
-			int numSingletons = getMultiplicity(EmptyPalindrome.SINGLETON);
 
             if (fullSize < minSize) {
                 emptyCount = minSize - fullSize;
                 add(EmptyPalindrome.SINGLETON, emptyCount);
-				numSingletons += emptyCount;
             }
+
             for (; continueEnumeration && fullSize <= maxSize; ++emptyCount) {
                 sig.accommodate(this);
                 double weight = currWeight * w.getWeight(l, fullSize);
                 if (sigOracle.withinValidRange(sig, weight)) {
-					double fbrWeight = currFbrWeight * fw.getWeight(l, fullSize, prevFullSize, numSingletons, prevSingletons);
-					if (fw == null || fbrWeight >= minFbrWeight) {
-                        prevFullSize = fullSize;
-                        prevSingletons = numSingletons;
-                        continueEnumeration = foldingHandler.handle(this, l - 1, weight, fbrWeight);
-                    }
+                    continueEnumeration = foldingHandler.handle(this, l - 1, weight);
                 }
                 add(EmptyPalindrome.SINGLETON, 1);
-				numSingletons += 1;
             }
             removeUnique(EmptyPalindrome.SINGLETON, emptyCount);
         } else {
@@ -674,7 +669,6 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
             } else {
                 // Solving recursively without using the current center:
                 continueEnumeration = allFoldingsSelectCenters1(foldingHandler, w, l, currWeight,
-
                         minWeight, sigOracle, currWrap, getNext(currCenter),
                         currCenterDeg, sig, centerDegIncreased, expandable);
 
@@ -708,10 +702,9 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
         return continueEnumeration;
     }
 
+
     private boolean allFoldingsExpendComposite1(FoldingHandler foldingHandler,
-                                                Weights w, FbrWeights fw,
-                                                int l, double currWeight, double currFbrWeight,
-                                                double minWeight, double minFbrWeight,
+                                                Weights w, int l, double currWeight, double minWeight,
                                                 SigCurve sigOracle, Block currWrap, int currCenterDeg,
                                                 Signature sig, boolean centerDegIncreased, PalindromeCollection expandable,
                                                 BFBPalindrome expending, CompositPalindrome toExpand) {
@@ -804,6 +797,234 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
         }
         return continueEnumeration;
     }
+    private boolean allFoldingsSelectCenters1(FoldingHandler1 foldingHandler,
+                                              Weights w, FbrWeights fw, int l, 
+											  double currWeight, double currFbrWeight,
+											  double minWeight, double minFbrWeight,
+                                              SigCurve sigOracle, Block currWrap, BFBPalindrome currCenter,
+                                              int currCenterDeg, Signature sig, boolean centerDegIncreased,
+                                              PalindromeCollection expandable) {
+
+        boolean continueEnumeration = true;
+        if (currWrap == null) {
+            // Base case: no additional composite palindromes may be generated.
+            // Generating all foldings obtained by adding empty palindromes to
+            // this collection:
+            int emptyCount = 0;
+            double nextMinWeight = minWeight / currWeight;
+            int minSize = w.getMinCount(l, nextMinWeight);
+            int maxSize = w.getMaxCount(l, nextMinWeight);
+			
+			int numSingletons = getMultiplicity(EmptyPalindrome.SINGLETON);
+
+            if (fullSize < minSize) {
+                emptyCount = minSize - fullSize;
+                add(EmptyPalindrome.SINGLETON, emptyCount);
+				numSingletons += emptyCount;
+            }
+            for (; continueEnumeration && fullSize <= maxSize; ++emptyCount) {
+                sig.accommodate(this);
+                double weight = currWeight * w.getWeight(l, fullSize);
+                if (sigOracle.withinValidRange(sig, weight)) {
+					double fbrWeight = currFbrWeight * fw.getWeight(l, fullSize, prevFullSize, numSingletons, prevSingletons);
+					if (fw == null || fbrWeight >= minFbrWeight) {
+                        prevFullSize = fullSize;
+                        prevSingletons = numSingletons;
+                        continueEnumeration = foldingHandler.handle(this, l - 1, weight, fbrWeight);
+                    }
+                }
+                add(EmptyPalindrome.SINGLETON, 1);
+				numSingletons += 1;
+            }
+            removeUnique(EmptyPalindrome.SINGLETON, emptyCount);
+        } else {
+            // Adding recursively additional foldings, which include concatenated
+            // elements from this collection.
+
+            int wrapMultiplicity = getMultiplicity(currWrap);
+
+            // Advancing center to the next relevant element, if needed.
+            for (; currCenter != null && (currCenter.depth() > currWrap.depth()
+                    || (currCenter.depth() == currWrap.depth() && currCenter.centerDeg() !=
+                    currCenterDeg)); currCenter = getNext(currCenter))
+                ;
+
+            if (currCenter != null && currCenterDeg > 0 && currCenter.depth() < currWrap.depth()) {
+                currCenter = null;
+            }
+
+            if (currCenter == null) {
+                // No more nonempty centers can participate in composite
+                // palindromes.
+
+                continueEnumeration = allFoldingsExpendComposite1(foldingHandler, w, fw, l, currWeight, currFbrWeight,
+                        minWeight, minFbrWeight,
+                        sigOracle, currWrap, currCenterDeg,
+                        sig, centerDegIncreased, expandable, getFirst(),
+                        (CompositPalindrome) expandable.getFirst());
+
+                // If currCenterDeg == 0, empty centers can be added.
+                if (currCenterDeg == 0) {
+                    int maxCenters = wrapMultiplicity / 2;
+                    CompositPalindrome emptyCenterComposite = CompositPalindrome.make(
+                            ConvexPalindrome.make(EmptyPalindrome.SINGLETON, null), currWrap);
+                    int i = 0;
+                    for (; continueEnumeration && i < maxCenters; ++i) {
+                        expandable.add(emptyCenterComposite);
+                        removeUnique(currWrap, 2);
+                        continueEnumeration = allFoldingsExpendComposite1(foldingHandler, w, fw, l,
+                                currWeight, currFbrWeight,
+                                minWeight, minFbrWeight,
+                                sigOracle, currWrap, currCenterDeg,
+                                sig, true, expandable, getFirst(),
+                                (CompositPalindrome) expandable.getFirst());
+                    }
+                    add(currWrap, i * 2);
+                    expandable.removeUnique(emptyCenterComposite, i);
+                }
+            } else {
+                // Solving recursively without using the current center:
+                continueEnumeration = allFoldingsSelectCenters1(foldingHandler, w, fw, l,
+                        currWeight, currFbrWeight,
+                        minWeight, minFbrWeight, sigOracle, currWrap, getNext(currCenter),
+                        currCenterDeg, sig, centerDegIncreased, expandable);
+
+                // Solving recursively with the current center used at least once:
+                int maxCenters;
+                if (currCenter.equals(currWrap)) {
+                    // Each palindrome contains three occurrences of center/wrap.
+                    maxCenters = wrapMultiplicity / 3;
+                } else {
+                    // Each palindrome contains two occurrences of wrap and one of center.
+                    maxCenters = Math.min(getMultiplicity(currCenter), wrapMultiplicity / 2);
+                }
+
+                CompositPalindrome composite = CompositPalindrome.make(
+                        ConvexPalindrome.make(currCenter, null), currWrap);
+                int i = 0;
+                for (; continueEnumeration && i < maxCenters; ++i) {
+                    expandable.add(composite);
+                    removeUnique(currWrap, 2);
+                    removeUnique(currCenter, 1);
+
+                    continueEnumeration = allFoldingsSelectCenters1(foldingHandler, w, fw,
+                            l, currWeight, currFbrWeight,
+                            minWeight, minFbrWeight, sigOracle, currWrap, getNext(currCenter),
+                            currCenterDeg, sig, true, expandable);
+                }
+                expandable.removeUnique(composite, i);
+                add(currWrap, i * 2);
+                add(currCenter, i);
+            }
+        }
+        return continueEnumeration;
+    }
+
+    private boolean allFoldingsExpendComposite1(FoldingHandler1 foldingHandler,
+                                                Weights w, FbrWeights fw,
+                                                int l, double currWeight, double currFbrWeight,
+                                                double minWeight, double minFbrWeight,
+                                                SigCurve sigOracle, Block currWrap, int currCenterDeg,
+                                                Signature sig, boolean centerDegIncreased, PalindromeCollection expandable,
+                                                BFBPalindrome expending, CompositPalindrome toExpand) {
+
+        boolean continueEnumeration = true;
+        if (toExpand == null) {
+            // No further foldings may be done using the current wrap.
+            add(expandable);
+
+            // Validity check: if the lexicographic rank of the current signature
+            // is already too high, this collection can be discarded (any
+            // consecutive foldings may only increase the signature).
+            sig.accommodate(this);
+            if (sigOracle.withinValidRange(sig)) {
+                int wrapDepth = currWrap.depth();
+                Block prevWrap = prevBlock(currWrap);
+                if (prevWrap == null || prevWrap.depth() > wrapDepth) {
+                    // The current wrap is first among blocks of its depth, and
+                    // it might be possible to generate palindromes with higher
+                    // center degree.
+                    if (centerDegIncreased) {
+                        // Finding the last block of the same depth:
+                        Block lastInDepth = lastInDepth(currWrap);
+                        if (lastInDepth != null) {
+                            continueEnumeration = allFoldingsSelectCenters1(foldingHandler, w, fw,
+                                    l, currWeight, currFbrWeight,
+                                    minWeight, minFbrWeight, sigOracle, lastInDepth, getFirst(),
+                                    currCenterDeg + 1, sig, false, new PalindromeCollection());
+                        } else {
+                            continueEnumeration = allFoldingsSelectCenters1(foldingHandler, w, fw, l,
+                                    currWeight, currFbrWeight, minWeight, minFbrWeight, sigOracle, prevWrap, getFirst(),
+                                    0, sig, false, new PalindromeCollection());
+                        }
+                    } else {
+                        continueEnumeration = allFoldingsSelectCenters1(foldingHandler, w, fw, l,
+                                currWeight, currFbrWeight, minWeight, minFbrWeight,
+                                sigOracle, prevWrap, getFirst(),
+                                0, sig, false, new PalindromeCollection());
+                    }
+                } else {
+                    continueEnumeration = allFoldingsSelectCenters1(foldingHandler, w, fw, l,
+                            currWeight, currFbrWeight, minWeight, minFbrWeight,
+                            sigOracle, prevWrap, getFirst(),
+                            currCenterDeg, sig, centerDegIncreased, new PalindromeCollection());
+                }
+            }
+            remove(expandable);
+        } else {
+            for (; expending != null && expending.depth() >= toExpand.center.minPartDepth();
+                 expending = getNext(expending))
+                ;
+            if (!expandable.contains(toExpand) || expending == null) {
+                // All occurrences of toExpand where already expanded and/or all
+                // expansions to toExpand were done.
+                continueEnumeration = allFoldingsExpendComposite1(foldingHandler, w, fw, l,
+                        currWeight, currFbrWeight, minWeight, minFbrWeight,
+                        sigOracle, currWrap, currCenterDeg,
+                        sig, centerDegIncreased, expandable, getFirst(),
+                        (CompositPalindrome) expandable.getNext(toExpand));
+            } else if (!contains(expending)) {
+                throw new RuntimeException("Expansion bug!!!");
+            } else {
+                // Solving recursively without using the current expending element:
+                continueEnumeration = allFoldingsExpendComposite1(foldingHandler, w, fw, l,
+                        currWeight, currFbrWeight, minWeight, minFbrWeight,
+                        sigOracle, currWrap, currCenterDeg,
+                        sig, centerDegIncreased, expandable, getNext(expending),
+                        toExpand);
+
+                // Expanding 'toExpand' using 'expanding':
+                int nestingDeg = ((ConvexPalindrome) toExpand.center).nestingDeg();
+                int toExpandMultiplicity = expandable.getMultiplicity(toExpand);
+                int expandingMultiplicity = getMultiplicity(expending);
+                int expansionFactor = 1 << nestingDeg;
+                int maxExpentions = Math.min(expandingMultiplicity / expansionFactor,
+                        toExpandMultiplicity);
+                CompositPalindrome composite = ((CompositPalindrome) toExpand).extendCenter(expending);
+
+                int i = 0;
+                for (; continueEnumeration && i < maxExpentions; ++i) {
+                    expandable.add(composite);
+                    expandable.removeUnique(toExpand, 1);
+                    removeUnique(expending, expansionFactor);
+
+                    continueEnumeration = allFoldingsExpendComposite1(foldingHandler, w, fw,
+                            l, currWeight, currFbrWeight,
+                            minWeight, minFbrWeight,
+                            sigOracle, currWrap, currCenterDeg,
+                            sig, true, expandable, getNext(expending),
+                            toExpand);
+                }
+
+                add(expending, i * expansionFactor);
+                expandable.add(toExpand, i);
+                expandable.removeUnique(composite, i);
+            }
+        }
+        return continueEnumeration;
+    }
+
+
 
     private Block lastInDepth(Block b) {
         Block lastInDepth = null;
