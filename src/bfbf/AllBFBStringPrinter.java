@@ -5,7 +5,7 @@ import bfbf.weights.Weights;
 
 import java.io.PrintStream;
 
-public class AllBFBStringPrinter extends FoldingHandler {
+public class AllBFBStringPrinter extends FoldingHandler1 {
 
     protected PrintStream stream;
     protected int maxStrings;

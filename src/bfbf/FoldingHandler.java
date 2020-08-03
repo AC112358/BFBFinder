@@ -42,7 +42,7 @@ public abstract class FoldingHandler {
      *
      * @param collection the input collection.
      * @param l          base layer level.
-     * @param weight     the collection's weight.
+     * @param weight     the collection's count weight.
      * @return true if the procedure succeeded, false otherwise.
      */
     public abstract boolean handle(PalindromeCollection collection, int l, double weight);
