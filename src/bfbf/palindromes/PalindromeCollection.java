@@ -57,7 +57,7 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
     public PalindromeCollection() {
         multiplicities = new ArrayList<>();
         fullSize = 0;
-		prevFullSize = 0;
+		prevFullSize = -1;
 		prevSingletons = 0;
     }
 
@@ -573,13 +573,17 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
         return allFoldingsSelectCenters1(foldingHandler, w, l, currWeight, minWeight, sigOracle, lastBlock(),
                 getFirst(), 0, sig, false, new PalindromeCollection());
     }
-    public boolean allFoldings1(FoldingHandler1  foldingHandler, double currWeight, double currFbrWeight,
+    public boolean allFoldings1(FoldingHandler foldingHandler, double currWeight, double currFbrWeight,
                                 Weights w, FbrWeights fw, int l, double minWeight, double minFbrWeight,
                                 SigCurve sigOracle, Signature sig) {
-
-        return allFoldingsSelectCenters1(foldingHandler, w, fw, l, currWeight, currFbrWeight, minWeight, minFbrWeight,
-                sigOracle, lastBlock(),
-                getFirst(), 0, sig, false, new PalindromeCollection());
+        if (fw != null) {
+            return allFoldingsSelectCenters1(foldingHandler, w, fw, l, currWeight, currFbrWeight, minWeight, minFbrWeight,
+                    sigOracle, lastBlock(),
+                    getFirst(), 0, sig, false, new PalindromeCollection());
+        }
+        else{
+            return allFoldings1(foldingHandler, currWeight, w, l, minWeight, sigOracle, sig);
+        }
     }
 
     private Block lastBlock() {
@@ -797,10 +801,10 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
         }
         return continueEnumeration;
     }
-    private boolean allFoldingsSelectCenters1(FoldingHandler1 foldingHandler,
-                                              Weights w, FbrWeights fw, int l, 
-											  double currWeight, double currFbrWeight,
-											  double minWeight, double minFbrWeight,
+    private boolean allFoldingsSelectCenters1(FoldingHandler foldingHandler,
+                                              Weights w, FbrWeights fw, int l,
+                                              double currWeight, double currFbrWeight,
+                                              double minWeight, double minFbrWeight,
                                               SigCurve sigOracle, Block currWrap, BFBPalindrome currCenter,
                                               int currCenterDeg, Signature sig, boolean centerDegIncreased,
                                               PalindromeCollection expandable) {
@@ -826,8 +830,18 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
                 sig.accommodate(this);
                 double weight = currWeight * w.getWeight(l, fullSize);
                 if (sigOracle.withinValidRange(sig, weight)) {
-					double fbrWeight = currFbrWeight * fw.getWeight(l, fullSize, prevFullSize, numSingletons, prevSingletons);
-					if (fw == null || fbrWeight >= minFbrWeight) {
+                    System.out.println("l = " + l + " --> " + this);
+                    System.out.println("prevFullSize = " + prevFullSize);
+                    System.out.println("fullSize = " + fullSize);
+                    System.out.println("prevSingletons = " + prevSingletons);
+                    double fbrWeight = 1;
+                    if (prevFullSize >= 0) {
+                        fbrWeight = currFbrWeight * fw.getWeight(l + 1, fullSize, prevFullSize, numSingletons, prevSingletons);
+                        System.out.println("fbr weight = " + fbrWeight + " and min fbr weight = " + minFbrWeight);
+                        System.out.println("For l = " + (l + 1) + ": weight of 0 = " + fw.getWeight(l + 1, 0) +
+                                " and weight of 1 = " + fw.getWeight(l + 1, 1));
+                    }
+					if (fbrWeight >= minFbrWeight) {
                         prevFullSize = fullSize;
                         prevSingletons = numSingletons;
                         continueEnumeration = foldingHandler.handle(this, l - 1, weight, fbrWeight);
@@ -920,7 +934,7 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
         return continueEnumeration;
     }
 
-    private boolean allFoldingsExpendComposite1(FoldingHandler1 foldingHandler,
+    private boolean allFoldingsExpendComposite1(FoldingHandler foldingHandler,
                                                 Weights w, FbrWeights fw,
                                                 int l, double currWeight, double currFbrWeight,
                                                 double minWeight, double minFbrWeight,

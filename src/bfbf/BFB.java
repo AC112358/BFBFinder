@@ -81,8 +81,8 @@ public class BFB {
     private static final String SUBSTRING = "l";
 
     private static final String FOLDBACK = "f";
-    private static final String FBR_ERROR_MODEL = "fe";
-    private static final String FBR_MIN_WEIGHT = "fw";
+    private static final String FBR_ERROR_MODEL = "E";
+    private static final String FBR_MIN_WEIGHT = "W";
 
     //	private static final String INPUT = "in";
     //	private static final String OUTPUT = "out";
@@ -144,7 +144,7 @@ public class BFB {
         Option fbrVectorOption = new Option(FOLDBACK, true,
                 "Foldback read vector");
         fbrVectorOption.setValueSeparator('=');
-        fbrVectorOption.setArgName("foldbackCounts");
+        fbrVectorOption.setArgName("foldbackVect");
         options.addOption(fbrVectorOption);
 
         Option fbrWeightOption = new Option(FBR_MIN_WEIGHT, true,
@@ -314,10 +314,46 @@ public class BFB {
                     }
                     break;
                 case STRING:
-                    if (cmd.hasOption(ALL)) {
-                        allBFBStrings(w, minWeight, minLength);
-                    } else {
-                        allBFBStrings(w, minWeight, minLength, 1);
+                    FbrWeights fw = null;
+                    ErrorModel fbrErrorModel = null;
+                    double minFbrWeight = Double.parseDouble(getOptValue(cmd, FBR_MIN_WEIGHT, "1"));
+                    String fbrErrorModelClassName = getOptValue(cmd, FBR_ERROR_MODEL, "NoErrorModel");
+                    String fbrVect = null;
+                    File fbrInputFile = null;
+                    Class<?> fbrClazz = Class.forName(ErrorModel.class.getPackageName() + "." + fbrErrorModelClassName);
+                    Constructor<?> fbrCtor = fbrClazz.getConstructor();
+                    fbrErrorModel = (ErrorModel) fbrCtor.newInstance();
+                    if (cmd.hasOption(FOLDBACK)){
+                        try {
+                            fbrVect = getOptValue(cmd, FOLDBACK, inputStr);
+                            fbrInputFile = new File(fbrVect);
+                            if (fbrInputFile.isFile()) {
+                                fbrVect = fileContent(fbrInputFile).trim();
+                            }
+                            fw = new FbrWeights(fbrVect, fbrErrorModel, minFbrWeight);
+                        } catch (IllegalArgumentException e) {
+                            if (fbrInputFile.isFile()) {
+                                fbrVect = " in " + fbrInputFile.getAbsolutePath();
+                            } else {
+                                fbrVect = ": " + fbrVect;
+                            }
+                            System.out.println("Invalid input format" + fbrVect);
+                            System.out.println("Run with -h argument for help.");
+                            System.exit(0);
+                        }
+                        if (cmd.hasOption(ALL)) {
+                            System.out.println(minFbrWeight);
+                            allBFBStrings(w, fw, minWeight, minFbrWeight, minLength);
+                        } else {
+                            allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, 1);
+                        }
+//			}
+                    }else {
+                        if (cmd.hasOption(ALL)) {
+                            allBFBStrings(w, minWeight, minLength);
+                        } else {
+                            allBFBStrings(w, minWeight, minLength, 1);
+                        }
                     }
                 default: // DECISION
                     out.println("Result: " + (Signature.heaviestBFBVector(w, minLength, minWeight) != null));

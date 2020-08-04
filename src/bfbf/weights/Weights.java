@@ -64,7 +64,6 @@ public class Weights {
                     throw new IllegalArgumentException("Invalid counts format: " + inputStr);
                 }
             }
-
             Weights w = errorModel.getWeights(counts, minWeight);
             this.minCounts = w.minCounts;
             this.weights = w.weights;

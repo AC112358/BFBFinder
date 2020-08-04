@@ -2,6 +2,7 @@ package bfbf;
 
 
 import bfbf.palindromes.PalindromeCollection;
+import bfbf.weights.FbrWeights;
 import bfbf.weights.Weights;
 
 import java.io.PrintStream;
@@ -19,6 +20,11 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
 
     public AllPairwiseBFBStringAccumulator(Weights w, int from, int to, double minWeight) {
         this(w, from, to, minWeight, -1);
+    }
+
+    public AllPairwiseBFBStringAccumulator(Weights w, FbrWeights fw, int from, int to,
+                                           double minWeight, double minFbrWeight) {
+        super(w, fw, from, to, minWeight, 0);
     }
 
     public AllPairwiseBFBStringAccumulator(Weights w, int from, int to, double minWeight,
@@ -66,6 +72,9 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
         }
     }
 
+    public boolean handle(PalindromeCollection collection, int l, double weight1, double weight2) {
+        return handle(collection, l, weight1);
+    }
 
     public boolean handle(PalindromeCollection collection, int l, double weight) {
         boolean continueEnumeration;

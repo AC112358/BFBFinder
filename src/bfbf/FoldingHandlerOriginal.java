@@ -2,7 +2,6 @@ package bfbf;
 
 import bfbf.palindromes.PalindromeCollection;
 import bfbf.weights.Weights;
-import bfbf.weights.FbrWeights;
 
 import java.util.List;
 
@@ -13,32 +12,28 @@ import java.util.List;
  *
  * @author zakov
  */
-public abstract class FoldingHandler1 {
+public abstract class FoldingHandlerOriginal {
 
     protected Weights w;
-    protected FbrWeights fw;
     protected int from, to; // segment interval begin and end indices
     protected List<SigCurve> sigCurves;
     protected Signature sig;
     protected double minWeight;
-    protected double minFbrWeight;
 
 
-    public FoldingHandler1(Weights w, FbrWeights fw, int from, int to, double minWeight, double minFbrWeight) {
+    public FoldingHandlerOriginal(Weights w, int from, int to, double minWeight) {
         super();
         sig = new Signature();
-        set(w, fw, from, to, minWeight, minFbrWeight);
+        set(w, from, to, minWeight);
     }
 
 
-    public void set(Weights w, FbrWeights fw, int from, int to, double minWeight, double minFbrWeight) {
+    public void set(Weights w, int from, int to, double minWeight) {
         this.w = w;
-        this.fw = fw;
         this.from = from;
         this.to = to;
         sigCurves = SigCurve.sigCurves(w, minWeight, from, to);
         this.minWeight = minWeight;
-        this.minFbrWeight = minFbrWeight;
     }
 
 
@@ -47,9 +42,8 @@ public abstract class FoldingHandler1 {
      *
      * @param collection the input collection.
      * @param l          base layer level.
-     * @param weight1     the collection's count weight.
-     * @param weight2     the collection's fbr weight
+     * @param weight     the collection's count weight.
      * @return true if the procedure succeeded, false otherwise.
      */
-    public abstract boolean handle(PalindromeCollection collection, int l, double weight1, double weight2);
+    public abstract boolean handle(PalindromeCollection collection, int l, double weight);
 }
