@@ -54,10 +54,13 @@ public abstract class FoldingHandler {
      * @param collection the input collection.
      * @param l          base layer level.
      * @param weight1     the collection's count weight.
-     * @param weight2     the collection's fbr weight
+     * @param weight2     the collection's fbr weight.
+     * @param prevFullSize the collection's full size from the previous call.
+     * @param prevSingletons the number of empty strings added in the previous folding step.
      * @return true if the procedure succeeded, false otherwise.
      */
-    public abstract boolean handle(PalindromeCollection collection, int l, double weight1, double weight2);
+    public abstract boolean handle(PalindromeCollection collection, int l, double weight1, double weight2,
+                                   int prevFullSize, int prevSingletons);
 
     /**
      * An abstract procedure applied over a BFB palindrome collection.

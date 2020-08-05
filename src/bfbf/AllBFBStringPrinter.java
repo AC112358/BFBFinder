@@ -29,22 +29,27 @@ public class AllBFBStringPrinter extends FoldingHandler {
         stringCount = 0;
     }
 
-    public boolean handle(PalindromeCollection collection, int l, double weight, double fbrWeight) {
-        System.out.println("handle with two args has been called");
+    public boolean handle(PalindromeCollection collection, int l, double weight, double fbrWeight,
+                          int prevFullSize, int prevSingletons) {
         boolean continueEnumeration;
         if (l == from - 1) {
             collection.wrap();
-            continueEnumeration = collection.allFoldings1(this, weight, fbrWeight, w, fw, -1, minWeight, minFbrWeight, sigCurves.get(0), sig);
+            continueEnumeration = collection.allFoldings1(this, weight, fbrWeight, w, fw, -1, minWeight,
+                    minFbrWeight, sigCurves.get(0), sig, prevFullSize, prevSingletons);
             collection.unwrap();
         } else if (l < -1) {
-            stream.println(collection.get(0).halfString());
-            ++stringCount;
+            String s = collection.get(0).halfString();
+            if (fw.getMiddleCharIndex() < 0 || s.charAt(s.length() - 1) == (char) ('A' + fw.getMiddleCharIndex())) {
+                stream.println(s);
+                ++stringCount;
+            }
             continueEnumeration = stringCount < maxStrings;
         } else {
             collection.wrap();
             ;
-            System.out.println(collection);
-            continueEnumeration = collection.allFoldings1(this, weight, fbrWeight, w, fw, l, minWeight, minFbrWeight, sigCurves.get(l), sig);
+            //System.out.println(collection);
+            continueEnumeration = collection.allFoldings1(this, weight, fbrWeight, w, fw, l, minWeight,
+                    minFbrWeight, sigCurves.get(l), sig, prevFullSize, prevSingletons);
             collection.unwrap();
         }
         return continueEnumeration;
@@ -54,16 +59,17 @@ public class AllBFBStringPrinter extends FoldingHandler {
         boolean continueEnumeration;
         if (l == from - 1) {
             collection.wrap();
-            continueEnumeration = collection.allFoldings1(this, weight, fbrWeight, w, -1, minWeight, sigCurves.get(0), sig);
+            continueEnumeration = collection.allFoldings1(this, weight, w, -1, minWeight, sigCurves.get(0), sig);
             collection.unwrap();
         } else if (l < -1) {
-            stream.println(collection.get(0).halfString());
+            String s = collection.get(0).halfString();
+            stream.println(s);
             ++stringCount;
             continueEnumeration = stringCount < maxStrings;
         } else {
             collection.wrap();
             ;
-            System.out.println(collection);
+            //System.out.println(collection);
             continueEnumeration = collection.allFoldings1(this, weight, w, l, minWeight, sigCurves.get(l), sig);
             collection.unwrap();
         }

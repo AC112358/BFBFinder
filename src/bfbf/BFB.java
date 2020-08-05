@@ -207,6 +207,35 @@ public class BFB {
             Constructor<?> ctor = clazz.getConstructor();
             errorModel = (ErrorModel) ctor.newInstance();
 
+            FbrWeights fw = null;
+            ErrorModel fbrErrorModel = null;
+            double minFbrWeight = Double.parseDouble(getOptValue(cmd, FBR_MIN_WEIGHT, "1"));
+            String fbrErrorModelClassName = getOptValue(cmd, FBR_ERROR_MODEL, "NoErrorModel");
+            String fbrVect = null;
+            File fbrInputFile = null;
+            Class<?> fbrClazz = Class.forName(ErrorModel.class.getPackageName() + "." + fbrErrorModelClassName);
+            Constructor<?> fbrCtor = fbrClazz.getConstructor();
+            fbrErrorModel = (ErrorModel) fbrCtor.newInstance();
+
+            if (cmd.hasOption(FOLDBACK)) {
+                try {
+                    fbrVect = getOptValue(cmd, FOLDBACK, inputStr);
+                    fbrInputFile = new File(fbrVect);
+                    if (fbrInputFile.isFile()) {
+                        fbrVect = fileContent(fbrInputFile).trim();
+                    }
+                    fw = new FbrWeights(fbrVect, fbrErrorModel, minFbrWeight);
+                } catch (IllegalArgumentException e) {
+                    if (fbrInputFile.isFile()) {
+                        fbrVect = " in " + fbrInputFile.getAbsolutePath();
+                    } else {
+                        fbrVect = ": " + fbrVect;
+                    }
+                    System.out.println("Invalid input format" + fbrVect);
+                    System.out.println("Run with -h argument for help.");
+                    System.exit(0);
+                }
+            }
 //			Matcher matcher = countVecPtrn.matcher(inputStr);
 //			if (matcher.matches()){
 //				String[] countsStr = matcher.group(1).split(",");
@@ -287,6 +316,25 @@ public class BFB {
                         out.println();
                     }
                 }
+
+                if (cmd.hasOption(FOLDBACK)) {
+                    out.print("Foldback read input: ");
+                    if (fbrInputFile.isFile()) {
+                        out.println(fbrInputFile.getAbsolutePath());
+                    } else {
+                        out.println(fbrVect);
+                    }
+
+                    if (fbrErrorModel != null) {
+                        out.print("Foldback read error model: " + fbrErrorModel.toString());
+                        if (!(fbrErrorModel instanceof NoErrorModel)) {
+                            out.println(", minimum solution weight: " + minFbrWeight);
+                        } else {
+                            out.println();
+                        }
+                    }
+                }
+
                 out.println();
             }
 
@@ -314,38 +362,30 @@ public class BFB {
                     }
                     break;
                 case STRING:
-                    FbrWeights fw = null;
-                    ErrorModel fbrErrorModel = null;
-                    double minFbrWeight = Double.parseDouble(getOptValue(cmd, FBR_MIN_WEIGHT, "1"));
-                    String fbrErrorModelClassName = getOptValue(cmd, FBR_ERROR_MODEL, "NoErrorModel");
-                    String fbrVect = null;
-                    File fbrInputFile = null;
-                    Class<?> fbrClazz = Class.forName(ErrorModel.class.getPackageName() + "." + fbrErrorModelClassName);
-                    Constructor<?> fbrCtor = fbrClazz.getConstructor();
-                    fbrErrorModel = (ErrorModel) fbrCtor.newInstance();
                     if (cmd.hasOption(FOLDBACK)){
-                        try {
-                            fbrVect = getOptValue(cmd, FOLDBACK, inputStr);
-                            fbrInputFile = new File(fbrVect);
-                            if (fbrInputFile.isFile()) {
-                                fbrVect = fileContent(fbrInputFile).trim();
-                            }
-                            fw = new FbrWeights(fbrVect, fbrErrorModel, minFbrWeight);
-                        } catch (IllegalArgumentException e) {
-                            if (fbrInputFile.isFile()) {
-                                fbrVect = " in " + fbrInputFile.getAbsolutePath();
-                            } else {
-                                fbrVect = ": " + fbrVect;
-                            }
-                            System.out.println("Invalid input format" + fbrVect);
-                            System.out.println("Run with -h argument for help.");
-                            System.exit(0);
+                        int currNumStrings = 0;
+                        int[] counts = fw.getCounts();
+                        for (int i = 0; i < counts.length; i++){
+                            counts[i] = 2*counts[i];
                         }
-                        if (cmd.hasOption(ALL)) {
-                            System.out.println(minFbrWeight);
-                            allBFBStrings(w, fw, minWeight, minFbrWeight, minLength);
-                        } else {
-                            allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, 1);
+                        for (int i = 0; i < counts.length; i++) {
+                            counts[i] += 1;
+                            if (i > 0){
+                                counts[i-1] -= 1;
+                            }
+                            fw.updateCounts(counts, i, fbrErrorModel, minFbrWeight);
+                            /*for (int j = 0; j < counts.length; j++){
+                                System.out.println("counts[" + j + "] = " + counts[j]);
+                                System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
+                            }*/
+                            if (cmd.hasOption(ALL)) {
+                                currNumStrings = allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, -1, currNumStrings);
+                            } else {
+                                currNumStrings  = allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, 1);
+                                if (currNumStrings == 1){
+                                    break;
+                                }
+                            }
                         }
 //			}
                     }else {
@@ -502,33 +542,43 @@ public class BFB {
 
 
 
-    public static void allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight, int minLength) {
-        allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, System.out, -1);
+    public static int allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight, int minLength) {
+        return allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, System.out, -1, 0);
     }
 
-    public static void allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight,
+
+    public static int allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight,
                                      int minLength, PrintStream stream) {
-        allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, stream, -1);
+        return allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, stream, -1, 0);
     }
 
-    public static void allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight,
+    public static int allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight,
                                      int minLength, int maxStrings) {
-        allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, System.out, maxStrings);
+        return allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, System.out, maxStrings, 0);
+    }
+
+    public static int allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight,
+                                    int minLength, int maxStrings, int currNumStrings) {
+        return allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, System.out, maxStrings, currNumStrings);
     }
 
     public static void allBFBStrings(Weights w, double minWeight, int minLength, PrintStream stream, int maxStrings) {
         AllBFBStringPrinter handler = new AllBFBStringPrinter(w, null, 0, w.length(), minWeight, 0,
                 stream, maxStrings);
-        handler.handle(new PalindromeCollection(), w.length() - 1, 1, 1);
+        handler.handle(new PalindromeCollection(), w.length() - 1, 1, 1, -1, -1);
         stream.println("Total number of strings: " + handler.numOfStrings());
     }
 
-    public static void allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight, int minLength,
-                                     PrintStream stream, int maxStrings) {
+    public static int allBFBStrings(Weights w, FbrWeights fw, double minWeight, double minFbrWeight, int minLength,
+                                     PrintStream stream, int maxStrings, int currNumStrings) {
         AllBFBStringPrinter handler = new AllBFBStringPrinter(w, fw, 0, w.length(), minWeight, minFbrWeight,
                 stream, maxStrings);
-        handler.handle(new PalindromeCollection(), w.length() - 1, 1, 1);
-        stream.println("Total number of strings: " + handler.numOfStrings());
+        handler.handle(new PalindromeCollection(), w.length() - 1, 1, 1, -1, -1);
+        currNumStrings += handler.numOfStrings();
+        if (fw.getMiddleCharIndex() == -1 || fw.getMiddleCharIndex() == w.length() - 1) {
+            stream.println("Total number of strings: " + currNumStrings);
+        }
+        return currNumStrings;
     }
 
     public static void allBFBPairwiseProjections(Weights w, double minWeight, int minLength) {

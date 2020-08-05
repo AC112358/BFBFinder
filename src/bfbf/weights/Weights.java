@@ -27,11 +27,13 @@ public class Weights {
     protected int[] minCounts;
     protected int[] heaviestCounts;
     protected double[][] weights;
+    protected int[] counts;
 
     protected Weights(int length) {
         minCounts = new int[length];
         heaviestCounts = new int[length];
         weights = new double[length][1];
+        counts = new int[length];
     }
 
     public Weights(int[] counts) {
@@ -40,6 +42,7 @@ public class Weights {
             minCounts[i] = counts[i];
             heaviestCounts[i] = counts[i];
             weights[i][0] = 1;
+            this.counts[i] = counts[i];
         }
     }
 
@@ -57,9 +60,11 @@ public class Weights {
             // Input is of a count vector format
             String[] countStrs = inputStr.replaceAll("[\\[\\]]", "").split("[,\\s]\\s*");
             int[] counts = new int[countStrs.length];
+            this.counts = new int[countStrs.length];
             for (int i = 0; i < countStrs.length; ++i) {
                 try {
                     counts[i] = Integer.parseInt(countStrs[i].trim());
+                    this.counts[i] = counts[i];
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Invalid counts format: " + inputStr);
                 }
@@ -109,6 +114,10 @@ public class Weights {
     public static void main(String[] args) {
         String str = "\n\n   3:0.5264,1.555  \n6:0.2,0.4,0.8";
         Weights w = new Weights(str);
+    }
+
+    public int[] getCounts(){
+        return counts;
     }
 
     public int length() {

@@ -23,8 +23,9 @@ public class AllBFBStringCounter extends FoldingHandler {
         this.countBox = countBox;
     }
 
-    @Override
-    public boolean handle(PalindromeCollection collection, int l, double weight1, double weight2) {
+
+    public boolean handle(PalindromeCollection collection, int l, double weight1, double weight2,
+                          int prevFullSize, int prevSingletons) {
         return handle(collection, l, weight1);
     }
 

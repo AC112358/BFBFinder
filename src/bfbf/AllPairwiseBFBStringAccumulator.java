@@ -72,7 +72,8 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
         }
     }
 
-    public boolean handle(PalindromeCollection collection, int l, double weight1, double weight2) {
+    public boolean handle(PalindromeCollection collection, int l, double weight1, double weight2,
+                          int prevFullSize, int prevSingletons) {
         return handle(collection, l, weight1);
     }
 
@@ -80,7 +81,7 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
         boolean continueEnumeration;
         if (l == from - 1) {
             collection.wrap();
-            continueEnumeration = collection.allFoldings1(this, weight, 1, w, null,-1, minWeight, 0, sigCurves.get(0), sig);
+            continueEnumeration = collection.allFoldings1(this, weight, w, l, minWeight, sigCurves.get(0), sig);
             collection.unwrap();
         } else if (l < -1) {
             int[] seq = collection.get(0).seq(from);
@@ -112,7 +113,7 @@ public class AllPairwiseBFBStringAccumulator extends FoldingHandler {
             continueEnumeration = stringCount < maxStrings;
         } else {
             collection.wrap();
-            continueEnumeration = collection.allFoldings1(this, weight, 1, w, null, l, minWeight, 0, sigCurves.get(l - from), sig);
+            continueEnumeration = collection.allFoldings1(this, weight, w, l, minWeight, sigCurves.get(l - from), sig);
             collection.unwrap();
         }
 
