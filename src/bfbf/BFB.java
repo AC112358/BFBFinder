@@ -14,6 +14,10 @@ it is "Decision".
 NoErrorModel (default), PoissonErrorModel, MaxRelativeErrorModel, and CanberraErrorModel. The min weight value
 should be set between 0 (don't do that!) and 1. In short, a value of 1 allows no errors, while the closer
 the value is to 0 more errors are allowed. Good chances there are still some bugs in this mechanism.
+- Additional foldback read arguments are optional. They are "-f=[f1,f2,...,fk]" to set the foldback vector,
+"-E=<error model class name>" to set the foldback count error model, and "-W=<min weight>" to set the minimum foldback
+weight. They function similarly to count vectors, where foldback weight bounds are calculated separately from count
+vector weight bounds
 
 Usage:
 
@@ -48,6 +52,9 @@ counts, according to the Poisson error model:
 5. Getting all BFB strings corresponding to counts with weight at least 0.858 with respect to the given
 counts, according to the Poisson error model:
 -s -a -e=PoissonErrorModel -w=0.858 [4,3,4,6,34]
+
+6. Getting all BFB strings corresponding to the given counts and foldback reads:
+-s -a -f=[0,1] [1,2]
 
  */
 
