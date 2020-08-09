@@ -61,8 +61,8 @@ public class Env {
     public static ErrorModel errorModel;
     private static List<List<int[]>> intArrLists;
     private static List<List<double[][]>> wrapArrLists;
-    private static List<Solution1> solutionList;
-    private static List<List<Solution1>> solutionLists;
+    private static List<Solution> solutionList;
+    private static List<List<Solution>> solutionLists;
 
     static {
         for (int i = 1; i <= 22; ++i) {
@@ -138,16 +138,16 @@ public class Env {
     }
 
 
-    public static Solution1 borrowSolution(int[] counts, Signature s, int r, double weight) {
-        Solution1 solution = borrowSolution(counts.length, r);
+    public static Solution borrowSolution(int[] counts, Signature s, int r, double weight) {
+        Solution solution = borrowSolution(counts.length, r);
         fill(solution.counts, counts, solution.counts.length);
         solution.s.setTo(s);
         solution.weight = weight;
         return solution;
     }
 
-    public static Solution1 borrowSolution(int[] counts, int[] s, int r, double weight) {
-        Solution1 solution = borrowSolution(counts.length, r);
+    public static Solution borrowSolution(int[] counts, int[] s, int r, double weight) {
+        Solution solution = borrowSolution(counts.length, r);
         fill(solution.counts, counts, solution.counts.length);
         solution.s.setTo(s);
         solution.weight = weight;
@@ -155,10 +155,10 @@ public class Env {
     }
 
 
-    public static Solution1 borrowSolution(int k, int r) {
-        Solution1 solution;
+    public static Solution borrowSolution(int k, int r) {
+        Solution solution;
         if (solutionList.isEmpty()) {
-            solution = new Solution1();
+            solution = new Solution();
         } else {
             solution = solutionList.remove(solutionList.size() - 1);
         }
@@ -167,7 +167,7 @@ public class Env {
         return solution;
     }
 
-    public static void returnSolution(Solution1 solution) {
+    public static void returnSolution(Solution solution) {
 
         returnIntArray(solution.counts);
 //		TODO: add pooling mechanisim for trove lists
@@ -179,14 +179,14 @@ public class Env {
         solutionList.add(solution);
     }
 
-    public static List<Solution1> borrowSolutionList() {
+    public static List<Solution> borrowSolutionList() {
         if (solutionLists.isEmpty()) {
             return new ArrayList<>();
         } else return solutionLists.remove(solutionLists.size() - 1);
     }
 
-    public static void returnSolutionList(List<Solution1> list) {
-        for (Solution1 solution : list) {
+    public static void returnSolutionList(List<Solution> list) {
+        for (Solution solution : list) {
             Env.returnSolution(solution);
         }
         list.clear();

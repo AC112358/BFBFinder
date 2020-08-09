@@ -166,7 +166,7 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
 
         for (int[] vec : allHeavyBFBSubVectors) {
             System.out.println(Arrays.toString(vec));
-            vec = Solution1.effectiveCounts(vec);
+            vec = Solution.effectiveCounts(vec);
             w = nem.getWeights(vec, 1);
             //			List<BFBPalindrome> palindromes =
             //			Bfb.allBFBStrings(w, 1, counts.length);

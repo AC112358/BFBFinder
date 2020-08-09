@@ -13,19 +13,7 @@ it is "Decision".
 - To set error bounds, use "-e=<error model class name>" and "-w=<min weight>". Error model class names are
 NoErrorModel (default), PoissonErrorModel, MaxRelativeErrorModel, and CanberraErrorModel. The min weight value
 should be set between 0 (don't do that!) and 1. In short, a value of 1 allows no errors, while the closer
-the value is to 0 more errors are allowed. Good chances there are still some bugs in this mechanism.
-
-Usage:
-
-Best way would be to use eclipse or intellij, and add the following 3 jars as dependencies:
-BFBFinder/external/commons-cli-1.4-bin/commons-cli-1.4/commons-cli-1.4.jar
-BFBFinder/external/commons-math3-3.6.1-bin/commons-math3-3.6.1/commons-math3-3.6.1.jar
-BFBFinder/external/trove-3.0.3/3.0.3/lib/trove-3.0.3.jar
-
-If you run from command line, set the working directory to "BFBFinder" (the project's root) and
-use the following command, replacing "<arg list>" with concrete arguments:
-
-java -classpath out/production/BFBFinder:external/commons-cli-1.4-bin/commons-cli-1.4/commons-cli-1.4.jar:external/commons-math3-3.6.1-bin/commons-math3-3.6.1/commons-math3-3.6.1.jar:external/trove-3.0.3/3.0.3/lib/trove-3.0.3.jar bfbf.BFB <arg list>
+the value is to 0 more errors are allowed.
 
 Some examples of possible arguments:
 
@@ -58,10 +46,7 @@ import bfbf.weights.NoErrorModel;
 import bfbf.weights.Weights;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.*;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -145,7 +130,7 @@ public class BFB {
         Weights w = null;
 
         try {
-            CommandLine cmd = new PosixParser().parse(options, args);
+            CommandLine cmd = new DefaultParser().parse(options, args);
             if (cmd.hasOption(HELP) || args.length == 0) {
                 printHelpAndExit();
             }
@@ -154,6 +139,7 @@ public class BFB {
             String inputStr, outputStr;
 
             if (args.length > 1 && !args[args.length - 2].startsWith("-")) {
+                // Two last arguments are input and output strings, resp.
                 inputStr = args[args.length - 2];
                 outputStr = args[args.length - 1];
                 File outputFile = new File(outputStr);
@@ -167,20 +153,20 @@ public class BFB {
                     out = new PrintStream(outputFile);
                 }
             } else {
+                // Output in written to standard output stream
                 inputStr = args[args.length - 1];
             }
 
             File inputFile = new File(inputStr);
             if (inputFile.isFile()) {
+                // Reading file content instead of assuming inputStr is the actual input
                 inputStr = fileContent(inputFile).trim();
             }
 
 //			w = new Weights(inputStr);
 
             double minWeight = Double.parseDouble(getOptValue(cmd, MIN_WEIGHT, "1"));
-
             String errorModelClassName = getOptValue(cmd, ERROR_MODEL, "NoErrorModel");
-
             Class<?> clazz = Class.forName(ErrorModel.class.getPackageName() + "." + errorModelClassName);
             Constructor<?> ctor = clazz.getConstructor();
             errorModel = (ErrorModel) ctor.newInstance();
@@ -215,9 +201,11 @@ public class BFB {
             if (cmd.hasOption(STRING)) {
                 if (variant == Variant.VECTOR) {
                     System.out.println("Only one arguments among '" + VECTOR +
-                            "' and '" + STRING + "' is allowed. Existing program...");
+                            "' and '" + STRING + "' is allowed. Ignoring '" + STRING + "' argument");
                 }
-                variant = Variant.STRING;
+                else {
+                    variant = Variant.STRING;
+                }
             }
 
             if (cmd.hasOption(SUBSTRING)) {
@@ -257,13 +245,11 @@ public class BFB {
                     out.println(", minimum number of consecutive segments in a solution: " + minLength);
                 }
 
-                if (errorModel != null) {
-                    out.print("Error model: " + errorModel.toString());
-                    if (!(errorModel instanceof NoErrorModel)) {
-                        out.println(", minimum solution weight: " + minWeight);
-                    } else {
-                        out.println();
-                    }
+                out.print("Error model: " + errorModel.toString());
+                if (!(errorModel instanceof NoErrorModel)) {
+                    out.println(", minimum solution weight: " + minWeight);
+                } else {
+                    out.println();
                 }
                 out.println();
             }
@@ -284,7 +270,7 @@ public class BFB {
                         }
 
                     } else {
-                        Solution1 solution = Signature.heaviestBFBVector(w, minLength, minWeight);
+                        Solution solution = Signature.heaviestBFBVector(w, minLength, minWeight);
                         if (solution != null) {
                             out.println("Heaviest BFB vector's weight: " + solution.getWeight() + ", counts:");
                             out.println(Arrays.toString(solution.counts));
@@ -297,6 +283,7 @@ public class BFB {
                     } else {
                         allBFBStrings(w, minWeight, minLength, 1);
                     }
+                    break;
                 default: // DECISION
                     out.println("Result: " + (Signature.heaviestBFBVector(w, minLength, minWeight) != null));
             }
@@ -340,6 +327,7 @@ public class BFB {
     }
 
     private static void printHelpAndExit() {
+        // TODO: add help text
         String usage = "TODO: usage description";
         System.out.println("\n" + usage);
         System.exit(0);

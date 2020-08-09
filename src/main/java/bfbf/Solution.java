@@ -32,14 +32,14 @@ import java.util.List;
  *
  * @author Shay Zakov
  */
-public class Solution1 implements Comparable<Solution1> {
+public class Solution implements Comparable<Solution> {
 
     protected int[] counts;
     public Signature s;
     protected double weight;
     protected int totalCount;
 
-    public Solution1() {
+    public Solution() {
         counts = new int[0];
         s = new Signature();
         totalCount = 0;
@@ -47,7 +47,7 @@ public class Solution1 implements Comparable<Solution1> {
     }
 
 
-    public Solution1(int[] counts, Signature s, double weight) {
+    public Solution(int[] counts, Signature s, double weight) {
         super();
         this.counts = counts;
         totalCount = sum(counts);
@@ -103,7 +103,7 @@ public class Solution1 implements Comparable<Solution1> {
     }
 
     @Override
-    public int compareTo(Solution1 other) {
+    public int compareTo(Solution other) {
         int res = s.compareTo(other.s);
 //		TODO: do we also want to compare weights???
         if (res == 0) {

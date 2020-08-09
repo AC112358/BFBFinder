@@ -53,10 +53,10 @@ public class Signature implements Comparable<Signature> {
 
     public static final int L = 0;
     public static final int H = 1;
-    private static final Comparator<Solution1> solutionComparator =
+    private static final Comparator<Solution> solutionComparator =
             new Comparator<>() {
                 @Override
-                public int compare(Solution1 arg0, Solution1 arg1) {
+                public int compare(Solution arg0, Solution arg1) {
                     return arg0.s.lexCompare(arg1.s);
                 }
             };
@@ -186,12 +186,12 @@ public class Signature implements Comparable<Signature> {
         List<int[]> heavyBFBSubVectors = new ArrayList<>();
         List<int[]> toAdd = new ArrayList<>();
 
-        List<Solution1> currSolutions = new ArrayList<>();
-        List<Solution1> prevSolutions = new ArrayList<>();
-        List<Solution1> tmp;
+        List<Solution> currSolutions = new ArrayList<>();
+        List<Solution> prevSolutions = new ArrayList<>();
+        List<Solution> tmp;
         BitSet extended = new BitSet();
 
-        Solution1 emptySolution = new Solution1();
+        Solution emptySolution = new Solution();
         int[] subCounts = new int[weights.length()];
         SigCurve lSigCurves;
 
@@ -254,7 +254,7 @@ public class Signature implements Comparable<Signature> {
      * @param l
      */
     private static void addSubCounts(List<int[]> heavyBFBSubVectors,
-                                     List<int[]> toAdd, List<Solution1> solutions, BitSet extended,
+                                     List<int[]> toAdd, List<Solution> solutions, BitSet extended,
                                      int[] subCounts, int k, int l) {
 
         toAdd.clear();
@@ -286,7 +286,7 @@ public class Signature implements Comparable<Signature> {
      * it at least {@code minWeight}. If no such vector exists, null is returned.
      */
 
-    public static Solution1 heaviestBFBVector(Weights weights, int minLength, double minWeight) {
+    public static Solution heaviestBFBVector(Weights weights, int minLength, double minWeight) {
 
         double bestWeight = 2;
         SigCurve[] bestCurves = null;
@@ -313,15 +313,15 @@ public class Signature implements Comparable<Signature> {
         }
 
 
-        List<Solution1> currSolutions = new ArrayList<>();
-        List<Solution1> prevSolutions = new ArrayList<>();
-        List<Solution1> tmp;
-        Solution1 emptySolution = new Solution1();
-        Solution1 tmpSolution = new Solution1();
+        List<Solution> currSolutions = new ArrayList<>();
+        List<Solution> prevSolutions = new ArrayList<>();
+        List<Solution> tmp;
+        Solution emptySolution = new Solution();
+        Solution tmpSolution = new Solution();
         int[] heaviestCounts = weights.getHeaviestCounts();
         double currWeight;
 
-        Solution1 optSolution = null;
+        Solution optSolution = null;
         int optSolutionStart = -1;
 
         for (int k = weights.length(); k >= minLength; --k) {
@@ -331,7 +331,7 @@ public class Signature implements Comparable<Signature> {
 
             for (int l = k - 1; l >= 0; --l) {
                 for (int i = prevSolutions.size() - 1; i >= 0; --i) {
-                    Solution1 prevSolution = prevSolutions.get(i);
+                    Solution prevSolution = prevSolutions.get(i);
                     currWeight = prevSolution.getWeight();
                     for (int m = heaviestCounts[l]; currWeight >= minWeight; ++m,
                             currWeight = weights.getWeight(l, m) * prevSolution.getWeight()) {
@@ -346,7 +346,7 @@ public class Signature implements Comparable<Signature> {
                 }
 
                 if (k - l >= minLength && !currSolutions.isEmpty()) {
-                    Solution1 currSolution = currSolutions.get(currSolutions.size() - 1);
+                    Solution currSolution = currSolutions.get(currSolutions.size() - 1);
                     prevSolutions.clear(); //TODO: pooling
                     if (optSolution == null ||
                             (currSolution.getWeight() > optSolution.getWeight()) ||
@@ -380,9 +380,9 @@ public class Signature implements Comparable<Signature> {
         return optSolution;
     }
 
-    private static void extend(Solution1 prevSolution,
-                               int m, double currWeight, int length, Solution1 tmpSolution,
-                               List<Solution1> currSolutions) {
+    private static void extend(Solution prevSolution,
+                               int m, double currWeight, int length, Solution tmpSolution,
+                               List<Solution> currSolutions) {
         tmpSolution.s.s.clear();
         tmpSolution.s.s.addAll(prevSolution.s.s);
         if (tmpSolution.s.minIncrement(m) && tmpSolution.s.hasPalindromicConcatenation()) {
@@ -395,7 +395,7 @@ public class Signature implements Comparable<Signature> {
                     int[] counts = new int[length];
                     counts[0] = m;
                     System.arraycopy(prevSolution.counts, 0, counts, 1, length - 1);
-                    currSolutions.add(rank, new Solution1(counts, new Signature(tmpSolution.s), currWeight));
+                    currSolutions.add(rank, new Solution(counts, new Signature(tmpSolution.s), currWeight));
                 }
             } else {
                 // A solution with identical signature already
@@ -403,7 +403,7 @@ public class Signature implements Comparable<Signature> {
                 // it is of higher weight. Since the signatures
                 // are identical, the two solutions must have
                 // the same count m for segment l.
-                Solution1 currSolution = currSolutions.get(rank);
+                Solution currSolution = currSolutions.get(rank);
                 if (currSolution.getWeight() < currWeight) {
                     currSolution.setWeight(currWeight);
                     System.arraycopy(prevSolution.counts, 0, currSolution.counts, 1, length - 1);
@@ -418,14 +418,14 @@ public class Signature implements Comparable<Signature> {
     }
 
     private static int foldToCount(double minWeight,
-                                   List<Solution1> currSolutions, List<Solution1> prevSolutions,
+                                   List<Solution> currSolutions, List<Solution> prevSolutions,
                                    Signature s, SigCurve lSigCurves,
                                    int m, double currWeight, BitSet extended) {
         int size = prevSolutions.size();
         int totalExaminedSolutions = 0;
 
         for (int i = 0; i < size; ++i) {
-            Solution1 prevSolution = prevSolutions.get(i);
+            Solution prevSolution = prevSolutions.get(i);
             double solutionWeight = prevSolution.getWeight() * currWeight;
             if (solutionWeight < minWeight) {
                 continue;
@@ -447,7 +447,7 @@ public class Signature implements Comparable<Signature> {
 
                 if (toAdd) {
                     //					++totalGenratedSolutions[0];
-                    Solution1 currSolution = new Solution1(addCount(m, prevSolution.counts), s, solutionWeight);
+                    Solution currSolution = new Solution(addCount(m, prevSolution.counts), s, solutionWeight);
                     currSolutions.add(currSolution);
                     extended.set(i);
                 }

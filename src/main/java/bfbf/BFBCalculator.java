@@ -269,8 +269,8 @@ public class BFBCalculator {
      * @return the longest BFB vector which approximates a suffix/substring
      * (depending on the mode) of the input vector.
      */
-    public static Solution1 longestBFB(int[] counts, double[][] countWeights, double minWeight, int mode) {
-        Solution1 solution = null;
+    public static Solution longestBFB(int[] counts, double[][] countWeights, double minWeight, int mode) {
+        Solution solution = null;
 
         switch (mode) {
             case Env.SUFFIX:
@@ -294,10 +294,10 @@ public class BFBCalculator {
      * whose distance from some sub-vector of the input vector is at most
      * {@code minWeight}.
      */
-    public static Solution1 longestBFBSubstring(int[] counts, double[][] countWeights, double minWeight) {
-        Solution1 bestSolution = longestBFBSuffix(counts, countWeights, counts.length, minWeight, null);
+    public static Solution longestBFBSubstring(int[] counts, double[][] countWeights, double minWeight) {
+        Solution bestSolution = longestBFBSuffix(counts, countWeights, counts.length, minWeight, null);
         for (int k = counts.length - 1; k >= bestSolution.getLength(); --k) {
-            Solution1 currSolution = longestBFBSuffix(counts, countWeights, k, minWeight, null);
+            Solution currSolution = longestBFBSuffix(counts, countWeights, k, minWeight, null);
             if ((currSolution.getLength() > bestSolution.getLength()) ||
                     ((currSolution.getLength() == bestSolution.getLength()) &&
                             (currSolution.getWeight() > bestSolution.getWeight()))) {
@@ -476,7 +476,7 @@ public class BFBCalculator {
         }
     }
 
-    public static Solution1 longestBFBSuffix(int[] counts, double[][] countWeights, double maxNormalizedError) {
+    public static Solution longestBFBSuffix(int[] counts, double[][] countWeights, double maxNormalizedError) {
         return longestBFBSuffix(counts, countWeights, counts.length, maxNormalizedError, null);
     }
 
@@ -495,8 +495,8 @@ public class BFBCalculator {
      * whose distance from a suffix of the prefix  {@code counts[0...k-1]} of the
      * input vector is at most {@code maxNormalizedError}.
      */
-    public static Solution1 longestBFBSuffix(int[] counts, double[][] countWeights, int k,
-                                             double minWeight, double[][] distances) {
+    public static Solution longestBFBSuffix(int[] counts, double[][] countWeights, int k,
+                                            double minWeight, double[][] distances) {
         boolean saveDistances = distances != null;
         int maxR = Env.getMaxR(counts);
         int prevCount, r, tmpR;
@@ -511,24 +511,24 @@ public class BFBCalculator {
         // strictly lower distance from a BFB vector, while the other has a
         // strictly lower signature. prevLayerSolutions is defined the same with
         // respect to layer l+1.
-        Map<Integer, List<Solution1>> currLayerSolutions = new HashMap<>();
-        Map<Integer, List<Solution1>> prevLayerSolutions = new HashMap<>();
-        Solution1 currSolution = Env.borrowSolution(counts.length, maxR);
+        Map<Integer, List<Solution>> currLayerSolutions = new HashMap<>();
+        Map<Integer, List<Solution>> prevLayerSolutions = new HashMap<>();
+        Solution currSolution = Env.borrowSolution(counts.length, maxR);
 
         addSolution(currLayerSolutions, currSolution, 0);
-        Solution1 bestSolution = Env.borrowSolution(currSolution.counts, currSolution.s, 0, currSolution.getWeight());
+        Solution bestSolution = Env.borrowSolution(currSolution.counts, currSolution.s, 0, currSolution.getWeight());
 
         for (int l = k - 1; l >= 0 && !currLayerSolutions.isEmpty(); --l) {
-            Map<Integer, List<Solution1>> tmp = currLayerSolutions;
+            Map<Integer, List<Solution>> tmp = currLayerSolutions;
             currLayerSolutions = prevLayerSolutions;
             prevLayerSolutions = tmp;
-            for (List<Solution1> list : currLayerSolutions.values()) {
+            for (List<Solution> list : currLayerSolutions.values()) {
                 Env.returnSolutionList(list);
             }
             currLayerSolutions.clear();
 
-            for (Entry<Integer, List<Solution1>> entry : prevLayerSolutions.entrySet()) {
-                for (Solution1 solution : entry.getValue()) {
+            for (Entry<Integer, List<Solution>> entry : prevLayerSolutions.entrySet()) {
+                for (Solution solution : entry.getValue()) {
 //					double maxCurrError = Env.errorModel.maxCurrError(solution.error, minWeight);
 //					int maxCurrCount = Env.errorModel.maxRealValue(counts[l], maxCurrError);
 //					int currCount = Env.errorModel.minRealValue(counts[l], maxCurrError);
@@ -591,9 +591,9 @@ public class BFBCalculator {
     }
 
 
-    private static boolean addSolution(Map<Integer, List<Solution1>> currLayerSolutions,
-                                       Solution1 solution, int currCount) {
-        List<Solution1> ls = currLayerSolutions.get(currCount);
+    private static boolean addSolution(Map<Integer, List<Solution>> currLayerSolutions,
+                                       Solution solution, int currCount) {
+        List<Solution> ls = currLayerSolutions.get(currCount);
         if (ls == null) {
             ls = Env.borrowSolutionList();
             currLayerSolutions.put(currCount, ls);
@@ -601,7 +601,7 @@ public class BFBCalculator {
         return addSolution(solution, ls);
     }
 
-    private static boolean addSolution(Solution1 solution, List<Solution1> ls) {
+    private static boolean addSolution(Solution solution, List<Solution> ls) {
         int listRank = Collections.binarySearch(ls, solution);
         if (listRank < 0) {
             listRank = -listRank - 1;
