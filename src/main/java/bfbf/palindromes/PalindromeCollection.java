@@ -28,6 +28,7 @@ import bfbf.weights.NoErrorModel;
 import bfbf.weights.PoissonErrorModel;
 import bfbf.weights.Weights;
 import bfbf.weights.FbrWeights;
+
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -166,7 +167,7 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
 
         for (int[] vec : allHeavyBFBSubVectors) {
             System.out.println(Arrays.toString(vec));
-            vec = Solution1.effectiveCounts(vec);
+            vec = Solution.effectiveCounts(vec);
             w = nem.getWeights(vec, 1);
             //			List<BFBPalindrome> palindromes =
             //			Bfb.allBFBStrings(w, 1, counts.length);
