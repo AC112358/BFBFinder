@@ -54,6 +54,7 @@ public class Solution implements Comparable<Solution> {
         this.s = new Signature(s);
         this.weight = weight;
     }
+    
 
     private static int sum(int[] counts) {
         int totalCount = 0;

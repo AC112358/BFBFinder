@@ -1,5 +1,7 @@
-package bfbf.weights;
+package main.java.bfbf.weights;
 
+import bfbf.weights.ErrorModel;
+import bfbf.weights.Weights;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FbrWeights extends Weights{
+public class FbrWeights extends Weights {
 	//protected String input;
 	//protected ErrorModel error;
 	protected int middleCharIndex;

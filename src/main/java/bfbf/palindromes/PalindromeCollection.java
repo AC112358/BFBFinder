@@ -27,7 +27,7 @@ import bfbf.*;
 import bfbf.weights.NoErrorModel;
 import bfbf.weights.PoissonErrorModel;
 import bfbf.weights.Weights;
-import bfbf.weights.FbrWeights;
+import main.java.bfbf.weights.FbrWeights;
 
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;

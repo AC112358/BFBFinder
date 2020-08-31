@@ -24,9 +24,13 @@ public class Weights {
     private static final int WEIGHTS_GROUP = 2;
     private static final int COUNT_GROUP = 1;
 
-    protected int[] minCounts;
-    protected int[] heaviestCounts;
-    protected double[][] weights;
+
+    public int[] minCounts;
+    public int[] heaviestCounts;
+    public double[][] weights;
+    //protected int[] minCounts;
+    //protected int[] heaviestCounts;
+    //protected double[][] weights;
     protected int[] counts;
 
     protected Weights(int length) {

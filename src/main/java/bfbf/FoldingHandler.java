@@ -2,7 +2,7 @@ package bfbf;
 
 import bfbf.palindromes.PalindromeCollection;
 import bfbf.weights.Weights;
-import bfbf.weights.FbrWeights;
+import main.java.bfbf.weights.FbrWeights;
 
 import java.util.List;
 

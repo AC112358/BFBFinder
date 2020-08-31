@@ -61,7 +61,7 @@ counts, according to the Poisson error model:
 import bfbf.palindromes.BFBPalindrome;
 import bfbf.palindromes.PalindromeCollection;
 import bfbf.weights.ErrorModel;
-import bfbf.weights.FbrWeights;
+import main.java.bfbf.weights.FbrWeights;
 import bfbf.weights.NoErrorModel;
 import bfbf.weights.Weights;
 import gnu.trove.list.TDoubleList;
@@ -361,7 +361,7 @@ public class BFB {
                         }
 
                     } else {
-                        Solution1 solution = Signature.heaviestBFBVector(w, minLength, minWeight);
+                        Solution solution = Signature.heaviestBFBVector(w, minLength, minWeight);
                         if (solution != null) {
                             out.println("Heaviest BFB vector's weight: " + solution.getWeight() + ", counts:");
                             out.println(Arrays.toString(solution.counts));
