@@ -572,7 +572,10 @@ public class Signature implements Comparable<Signature> {
 
     public static SigCurve[] lowerBoundSigCurves(Weights w, double minWeight,
                                                  int start, int end) {
+        SigCurve[] curves = SigCurve.sigCurves(w, minWeight, start, end).toArray(new SigCurve[end - start + 1]);
+        return curves;
 
+/*
         SigCurve[] curves = new SigCurve[end - start + 1];
         Signature s = new Signature();
         Signature prevSig;
@@ -589,13 +592,13 @@ public class Signature implements Comparable<Signature> {
             for (int pointIx = 0; pointIx < prevCurve.size(); ++pointIx) {
                 prevWeight = prevCurve.weights.get(pointIx);
                 prevSig = prevCurve.sigs.get(pointIx);
-                n = w.getMinCount(l, prevWeight);
+                n = w.getMinCount(l, prevWeight); // TODO: shouldn't this be minWeight/prevWeight instead of prevWeight?
                 countWeight = w.getWeight(l, n);
 
                 for (; countWeight >= prevWeight; ++n, countWeight = w.getWeight(l, n)) {
                     s.setTo(prevSig);
                     if (s.minDecrement(n)) {
-                        currWeight = prevWeight / countWeight;
+                        currWeight = prevWeight / countWeight; // TODO: shouldn't this be prevWeight * countWeight?
                         int insertionIx = currCurve.weights.binarySearch(currWeight);
                         if (insertionIx < 0) {
                             insertionIx = -insertionIx - 1;
@@ -628,11 +631,13 @@ public class Signature implements Comparable<Signature> {
                 }
             }
 
+            currCurve.weights.reverse();
             curves[l - start + 1] = currCurve;
             prevCurve = currCurve;
         }
 
         return curves;
+*/
 
     }
 
