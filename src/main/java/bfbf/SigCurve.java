@@ -14,22 +14,21 @@ public class SigCurve {
     private double minWeight;
 
     protected SigCurve(double minWeight) {
-        sigs = new ArrayList<>(1);
-        weights = new TDoubleArrayList(1);
+        sigs = new ArrayList<>(1); // a series of lexicographically increasing signatures
+        weights = new TDoubleArrayList(1); // a series of decreasing weights
         sigs.add(new Signature(1));
         weights.add(1);
         this.minWeight = minWeight;
     }
 
     private SigCurve(SigCurve prev, Weights w, int l, Signature s) {
-        sigs = new ArrayList<>();
-        weights = new TDoubleArrayList();
+        sigs = new ArrayList<>(); // a series of lexicographically increasing signatures
+        weights = new TDoubleArrayList(); // a series of decreasing weights
         this.minWeight = prev.minWeight;
 
-        double maxWeight = w.getMaxWeight(l);
         int maxCount = w.getMaxCount(l);
         for (int currCount = w.getMinCount(l); currCount <= maxCount; ++currCount) {
-            double currWeight = w.getWeight(l, currCount) / maxWeight;
+            double currWeight = w.getWeight(l, currCount);
             int maxIx = prev.findSmallerWeightIx(minWeight / currWeight);
             int minIx = prev.findMaxSignature(currCount, maxIx);
             for (int j = minIx; j < maxIx; ++j) {
