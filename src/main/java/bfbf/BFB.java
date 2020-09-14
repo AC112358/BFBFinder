@@ -58,10 +58,11 @@ counts, according to the Poisson error model:
 
  */
 
+import bfbf.distances.Distances;
 import bfbf.palindromes.BFBPalindrome;
 import bfbf.palindromes.PalindromeCollection;
 import bfbf.weights.ErrorModel;
-import main.java.bfbf.weights.FbrWeights;
+import bfbf.weights.FbrWeights;
 import bfbf.weights.NoErrorModel;
 import bfbf.weights.Weights;
 import gnu.trove.list.TDoubleList;
@@ -90,6 +91,8 @@ public class BFB {
     private static final String FOLDBACK = "f";
     private static final String FBR_ERROR_MODEL = "E";
     private static final String FBR_MIN_WEIGHT = "W";
+
+    private static final String DISTANCE = "d";
 
     //	private static final String INPUT = "in";
     //	private static final String OUTPUT = "out";
@@ -165,6 +168,11 @@ public class BFB {
         fbrErrorOption.setArgName("fbrErrorModel");
         options.addOption(fbrErrorOption);
 
+        Option distanceOption = new Option(DISTANCE, true, "Distance model to combine fbr + count weights");
+        distanceOption.setValueSeparator('=');
+        distanceOption.setArgName("weightDistanceModel");
+        options.addOption(distanceOption);
+
         options.addOption(HELP, false, "Show help");
 
         Variant variant = Variant.DECISION;
@@ -223,6 +231,14 @@ public class BFB {
             Class<?> fbrClazz = Class.forName(ErrorModel.class.getPackageName() + "." + fbrErrorModelClassName);
             Constructor<?> fbrCtor = fbrClazz.getConstructor();
             fbrErrorModel = (ErrorModel) fbrCtor.newInstance();
+
+            Distances weightDistanceModel = null;
+            String weightDistanceModelClassName = getOptValue(cmd, DISTANCE, "Distances");
+
+            Class<?> distanceClazz = Class.forName(Distances.class.getPackageName() + "." + weightDistanceModelClassName);
+            Constructor<?> distanceCtor = distanceClazz.getConstructor();
+            weightDistanceModel = (Distances) distanceCtor.newInstance();
+
 
             if (cmd.hasOption(FOLDBACK)) {
                 try {
@@ -340,6 +356,7 @@ public class BFB {
                             out.println();
                         }
                     }
+                    out.println("Weight distance error model: " + weightDistanceModel.toString());
                 }
 
                 out.println();
@@ -361,10 +378,43 @@ public class BFB {
                         }
 
                     } else {
-                        Solution solution = Signature.heaviestBFBVector(w, minLength, minWeight);
-                        if (solution != null) {
-                            out.println("Heaviest BFB vector's weight: " + solution.getWeight() + ", counts:");
-                            out.println(Arrays.toString(solution.counts));
+                        if (cmd.hasOption(FOLDBACK)) {
+                            FbrSolution solution = new FbrSolution();
+                            int[] counts = fw.getCounts();
+                            for (int i = 0; i < counts.length; i++) {
+                                counts[i] = 2 * counts[i];
+                            }
+                            for (int i = 0; i < counts.length; i++) {
+                                counts[i] += 1;
+                                if (i > 0) {
+                                    counts[i - 1] -= 1;
+                                }
+                                fw.updateCounts(counts, i, fbrErrorModel, minFbrWeight);
+                            /*for (int j = 0; j < counts.length; j++){
+                                System.out.println("counts[" + j + "] = " + counts[j]);
+                                System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
+                            }*/
+                                solution =  Signature.heaviestBFBVector(w, fw, minLength, minWeight,
+                                        minFbrWeight, weightDistanceModel);
+
+                            }
+                            if (solution != null) {
+                                out.print("Heaviest BFB vector's count weight: " + solution.getWeight() +
+                                        ", fold-back weight: " + solution.getFbrWeight() +
+                                        " (combined: " + weightDistanceModel.combineWeights(solution.getWeight(), solution.getFbrWeight()) + ")");
+                                out.println(", counts:");
+                                out.println(Arrays.toString(solution.counts));
+                                out.println("fold-backs:");
+                                out.println(Arrays.toString(solution.displayFbrCounts()));
+                            }
+                        }
+                        else {
+                            Solution solution = Signature.heaviestBFBVector(w, minLength, minWeight);
+                            if (solution != null) {
+                                out.println(solution.toString());
+                                out.println("Heaviest BFB vector's weight: " + solution.getWeight() + ", counts:");
+                                out.println(Arrays.toString(solution.counts));
+                            }
                         }
                     }
                     break;

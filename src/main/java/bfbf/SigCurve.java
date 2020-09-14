@@ -21,7 +21,7 @@ public class SigCurve {
         this.minWeight = minWeight;
     }
 
-    private SigCurve(SigCurve prev, Weights w, int l, Signature s) {
+    protected SigCurve(SigCurve prev, Weights w, int l, Signature s) {
         sigs = new ArrayList<>(); // a series of lexicographically increasing signatures
         weights = new TDoubleArrayList(); // a series of decreasing weights
         this.minWeight = prev.minWeight;
@@ -32,6 +32,7 @@ public class SigCurve {
             int maxIx = prev.findSmallerWeightIx(minWeight / currWeight);
             int minIx = prev.findMaxSignature(currCount, maxIx);
             for (int j = minIx; j < maxIx; ++j) {
+                //System.out.println(prev.sigs);
                 s.setTo(prev.sigs.get(j));
                 if (s.minDecrement(currCount)) {
                     double weight = currWeight * prev.weights.get(j);

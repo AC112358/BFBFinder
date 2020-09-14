@@ -50,6 +50,7 @@ public abstract class ErrorModel {
      * @param minWeight a bound to the
      * @return
      */
+
     public Weights getWeights(int[] counts, double minWeight) {
         Weights w = new Weights(counts.length);
         for (int i = 0; i < counts.length; ++i) {

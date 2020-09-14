@@ -1,11 +1,13 @@
-package main.java.bfbf.weights;
+package bfbf.weights;
 
 import bfbf.weights.ErrorModel;
 import bfbf.weights.Weights;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,9 @@ public class FbrWeights extends Weights {
 	//protected String input;
 	//protected ErrorModel error;
 	protected int middleCharIndex;
+
+	protected static final Pattern countVecPtrn = Pattern.compile(
+			"\\[\\s*(\\d+(\\s*,\\s*\\d+)*)?\\s*\\]");
 
     protected FbrWeights(int length) {
         super(length);
@@ -86,4 +91,13 @@ public class FbrWeights extends Weights {
 		int maxSingletons = count - prevFullSize + fullSize - prevSingletons;
 		return maxSingletons;
 	}
+
+	public int getMinCount(int l, double w) {
+		if (l < 0) return 1;
+		int c = heaviestCounts[l];
+		for (; c >= 1 && getWeight(l, c - 1) >= w; --c) ;
+		return c;
+	}
+
+
 }

@@ -55,7 +55,6 @@ public class Weights {
     }
 
     public Weights(String inputStr, ErrorModel errorModel, double minWeight) throws IllegalArgumentException {
-
         inputStr = inputStr.trim();
         Matcher matcher;
         matcher = countVecPtrn.matcher(inputStr);
@@ -114,6 +113,8 @@ public class Weights {
             processWeights();
         }
     }
+
+
 
     public static void main(String[] args) {
         String str = "\n\n   3:0.5264,1.555  \n6:0.2,0.4,0.8";
