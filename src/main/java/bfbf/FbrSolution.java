@@ -93,10 +93,10 @@ public class FbrSolution extends Solution {
     @Override
     public String toString() {
         String totalWeightString = "";
-        if (dist != null){
+        /*if (dist != null){
             totalWeightString = " (combined weight: " + dist.combineWeights(weight, fbrWeight) + ")";
-        }
-        return ("{" + Arrays.toString(counts) + "," + Arrays.toString(getFbrCounts()) + "} (length: " + getLength() + "/" + counts.length + ", effective length: " +
+        }*/
+        return ("{" + Arrays.toString(counts) + "," + Arrays.toString(displayFbrCounts()) + "} (length: " + getLength() + "/" + counts.length + ", effective length: " +
                 getEffectiveLength() + ", count weight: " + weight + ", fold-back weight: " + fbrWeight +
                 totalWeightString + ")");
     }

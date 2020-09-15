@@ -380,16 +380,24 @@ public class BFB {
                     } else {
                         if (cmd.hasOption(FOLDBACK)) {
                             FbrSolution solution = new FbrSolution();
-                            int[] counts = fw.getCounts();
-                            for (int i = 0; i < counts.length; i++) {
-                                counts[i] = 2 * counts[i];
+                            int[] tmpFbrCounts = fw.getCounts();
+                            int[] fbrCounts = new int[tmpFbrCounts.length + 1];
+                            int[] tmpCounts = w.getCounts();
+                            int[] counts = new int[tmpCounts.length + 1];
+
+                            fbrCounts[0] = 0;
+                            counts[0] = 1;
+                            for (int i = 0; i < tmpFbrCounts.length; i++) {
+                                fbrCounts[i + 1] = 2 * tmpFbrCounts[i];
+                                counts[i + 1] = tmpCounts[i];
                             }
                             for (int i = 0; i < counts.length; i++) {
-                                counts[i] += 1;
+                                /*counts[i] += 1;
                                 if (i > 0) {
                                     counts[i - 1] -= 1;
-                                }
-                                fw.updateCounts(counts, i, fbrErrorModel, minFbrWeight);
+                                }*/
+                                fw.updateCounts(fbrCounts, i, fbrErrorModel, minFbrWeight);
+                                w.updateCounts(counts, errorModel, minWeight);
                             /*for (int j = 0; j < counts.length; j++){
                                 System.out.println("counts[" + j + "] = " + counts[j]);
                                 System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
@@ -406,7 +414,28 @@ public class BFB {
                                 out.println(Arrays.toString(solution.counts));
                                 out.println("fold-backs:");
                                 out.println(Arrays.toString(solution.displayFbrCounts()));
+                                //out.println(Arrays.toString(solution.getFbrCounts()));
+                                //int[] fbrSoln = solution.getFbrCounts();
+                                //System.out.println(Arrays.toString(solution.epsilons));
+                                /*System.out.println(fw.getWeight(1, 1, 0, 0, solution.epsilons[0]));
+                                System.out.println("0, 2 -->" + fw.getWeight(0, 2));
+                                System.out.println("0, 1 -->" + fw.getWeight(0, 1));
+                                System.out.println("0, 0 -->" + fw.getWeight(0, 0));
+
+                                System.out.println("1, 2 -->" + fw.getWeight(1, 2));
+                                System.out.println("1, 1 -->" + fw.getWeight(1, 1));
+                                System.out.println("1, 0 -->" + fw.getWeight(1, 0));*/
                             }
+                            /*int[] test = {0,0,0,9,3,3,7};
+                            int[] output ={0,2,0,9,5,4,9};
+                            FbrWeights testWeights = new FbrWeights(test);
+                            double currWt = 1;
+                            for (int i = 0; i < test.length; i++){
+                                System.out.println(i + ":" + output[i] + " vs " + test[i]);
+                                currWt *= testWeights.getWeight(i, output[i]);
+                                System.out.println(i + ": " + currWt);
+                            }
+                            System.out.println(currWt);*/
                         }
                         else {
                             Solution solution = Signature.heaviestBFBVector(w, minLength, minWeight);

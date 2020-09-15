@@ -81,13 +81,13 @@ public class FbrWeights extends Weights {
 	}
 
 	public int getMinCount(int l, double w, int fullSize, int prevFullSize, int prevSingletons){
-		int count = getMinCount(l, w);
+    	int count = getMinCount(l, w);
 		int minSingletons = count - prevFullSize + fullSize - prevSingletons;
 		return minSingletons;
 	}
 
 	public int getMaxCount(int l, double w, int fullSize, int prevFullSize, int prevSingletons){
-		int count = getMaxCount(l, w);
+    	int count = getMaxCount(l, w);
 		int maxSingletons = count - prevFullSize + fullSize - prevSingletons;
 		return maxSingletons;
 	}
@@ -97,6 +97,10 @@ public class FbrWeights extends Weights {
 		int c = heaviestCounts[l];
 		for (; c >= 1 && getWeight(l, c - 1) >= w; --c) ;
 		return c;
+	}
+
+	public double getWeight(int ix, int count) {
+		return super.getWeight(ix, 2 * (count/2));
 	}
 
 

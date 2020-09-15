@@ -50,6 +50,13 @@ public class Weights {
         }
     }
 
+    public void updateCounts(int[] counts, ErrorModel errorModel, double minWeight){
+        Weights w = errorModel.getWeights(counts, minWeight);
+        this.minCounts = w.minCounts;
+        this.weights = w.weights;
+        this.heaviestCounts = w.heaviestCounts;
+    }
+
     public Weights(String inputStr) throws IllegalArgumentException {
         this(inputStr, new NoErrorModel(), 1);
     }

@@ -12,7 +12,8 @@ public class Distances {
     }
 
     public double combineWeights(double countWeight, double fbrWeight){
-        return 0.5*(countWeight + fbrWeight);
+
+        return 0.5*countWeight + 0.5*fbrWeight;
     }
 
     public boolean firstPairDominates(double countWeight1, double fbrWeight1,
@@ -23,11 +24,12 @@ public class Distances {
 
     public boolean firstPairStrictlyDominates(double countWeight1, double fbrWeight1,
                 double countWeight2, double fbrWeight2) {
-        return (countWeight1 >= countWeight2 && fbrWeight1 > fbrWeight2 ||
-                countWeight1 > countWeight2 && fbrWeight1 >= fbrWeight2 );
+        /*return (countWeight1 >= countWeight2 && fbrWeight1 > fbrWeight2 ||
+                countWeight1 > countWeight2 && fbrWeight1 >= fbrWeight2 );*/
+        return compareCombinedWeights(countWeight1, fbrWeight1, countWeight2, fbrWeight2);
     }
     public String toString(){
-        return "Independent weights, optimize average";
+        return "Optimize average";
     }
 
 }

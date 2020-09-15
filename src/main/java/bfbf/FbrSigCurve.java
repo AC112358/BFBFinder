@@ -136,6 +136,8 @@ public class FbrSigCurve{
                     double weight = currWeight * prev.weights.get(j);
                     int minFbrCount = fw.getMinCount(l, minFbrWeight, prevN, currCount, prevM);
                     int maxFbrCount = fw.getMaxCount(l, minFbrWeight, prevN, currCount, prevM);
+                    minFbrCount = Math.max(minFbrCount, 0);
+                    maxFbrCount = Math.min(maxFbrCount, currCount - 1);
                     for (int currEpsilon = minFbrCount; currEpsilon <= maxFbrCount; ++currEpsilon) {
                         s.setTo(prev.nmSigs.get(j).sig);
                         if (!s.minTwoDecrements(currCount, currCount - currEpsilon)) {
