@@ -467,7 +467,7 @@ public class Signature implements Comparable<Signature> {
                 }
             }
         }
-        //System.out.println(bestCurves.length);
+
         if (bestCurves != null) {
             int[] counts = new int[weights.length()];
             for (int l = bestStart + minLength - 1; l >= bestStart; --l) {
@@ -565,7 +565,6 @@ public class Signature implements Comparable<Signature> {
                     /*if (optSolution == tmpSolution) {
                         System.out.println(optSolution);
                     }*/
-                    //System.out.println(optSolution);
                 }
                 if (k - l >= minLength && !currSolutions.isEmpty()) {
                     FbrSolution currSolution = currSolutions.get(currSolutions.size() - 1);

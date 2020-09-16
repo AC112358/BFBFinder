@@ -108,7 +108,7 @@ public class FbrSigCurve{
         return max;
     }
 
-    private FbrSigCurve(FbrSigCurve prev, Weights w, FbrWeights fw, int l, Signature s, Distances dist) {
+    private FbrSigCurve(FbrSigCurve prev, Weights w, FbrWeights fw, int l, Signature s, Distances dist, int end) {
         nmSigs = new ArrayList<>(); // a series of lexicographically increasing signatures
         weights = new TDoubleArrayList(); // a series of decreasing weights
         fbrWeights = new TDoubleArrayList();
@@ -137,7 +137,9 @@ public class FbrSigCurve{
                     int minFbrCount = fw.getMinCount(l, minFbrWeight, prevN, currCount, prevM);
                     int maxFbrCount = fw.getMaxCount(l, minFbrWeight, prevN, currCount, prevM);
                     minFbrCount = Math.max(minFbrCount, 0);
-                    maxFbrCount = Math.min(maxFbrCount, currCount - 1);
+                    if (l < end - 1){
+                        maxFbrCount = Math.min(maxFbrCount, currCount - 1);
+                    }
                     for (int currEpsilon = minFbrCount; currEpsilon <= maxFbrCount; ++currEpsilon) {
                         s.setTo(prev.nmSigs.get(j).sig);
                         if (!s.minTwoDecrements(currCount, currCount - currEpsilon)) {
@@ -216,7 +218,7 @@ public class FbrSigCurve{
         FbrSigCurve currCurve, prevCurve = new FbrSigCurve(minWeight, minFbrWeight);
         curves.add(prevCurve);
         for (int l = start; l < end; ++l) {
-            currCurve = new FbrSigCurve(prevCurve, weights, fbrWeights, l, s, distance);
+            currCurve = new FbrSigCurve(prevCurve, weights, fbrWeights, l, s, distance, end);
             curves.add(currCurve);
             prevCurve = currCurve;
         }

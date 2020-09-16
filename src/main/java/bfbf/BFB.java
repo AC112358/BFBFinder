@@ -391,21 +391,15 @@ public class BFB {
                                 fbrCounts[i + 1] = 2 * tmpFbrCounts[i];
                                 counts[i + 1] = tmpCounts[i];
                             }
-                            for (int i = 0; i < counts.length; i++) {
-                                /*counts[i] += 1;
-                                if (i > 0) {
-                                    counts[i - 1] -= 1;
-                                }*/
-                                fw.updateCounts(fbrCounts, i, fbrErrorModel, minFbrWeight);
-                                w.updateCounts(counts, errorModel, minWeight);
+                            fw.updateCounts(fbrCounts, 0, fbrErrorModel, minFbrWeight);
+                            w.updateCounts(counts, errorModel, minWeight);
                             /*for (int j = 0; j < counts.length; j++){
                                 System.out.println("counts[" + j + "] = " + counts[j]);
                                 System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
                             }*/
-                                solution =  Signature.heaviestBFBVector(w, fw, minLength, minWeight,
+                            solution =  Signature.heaviestBFBVector(w, fw, minLength, minWeight,
                                         minFbrWeight, weightDistanceModel);
 
-                            }
                             if (solution != null) {
                                 out.print("Heaviest BFB vector's count weight: " + solution.getWeight() +
                                         ", fold-back weight: " + solution.getFbrWeight() +
@@ -434,8 +428,11 @@ public class BFB {
                                 System.out.println(i + ":" + output[i] + " vs " + test[i]);
                                 currWt *= testWeights.getWeight(i, output[i]);
                                 System.out.println(i + ": " + currWt);
+                                System.out.println(i + ": " + fbrErrorModel.weight(output[i], test[i]));
                             }
-                            System.out.println(currWt);*/
+                            System.out.println(currWt);
+                            System.out.println(Arrays.toString(fw.minCounts));*/
+
                         }
                         else {
                             Solution solution = Signature.heaviestBFBVector(w, minLength, minWeight);
