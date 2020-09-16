@@ -23,12 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b3151f04-4e84-4a1e-b5db-5953e5cc0d6b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/bfbf/weights/PolynomialFbrErrorModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bfbf/BFB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bfbf/BFB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bfbf/FbrSigCurve.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bfbf/FbrSigCurve.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bfbf/Signature.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bfbf/Signature.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bfbf/weights/PolynomialCountErrorModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bfbf/weights/PolynomialCountErrorModel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

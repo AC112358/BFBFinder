@@ -92,6 +92,8 @@ public class BFB {
     private static final String FBR_ERROR_MODEL = "E";
     private static final String FBR_MIN_WEIGHT = "W";
 
+    private static final String COMBINE_WEIGHT = "c";
+
     private static final String DISTANCE = "d";
 
     //	private static final String INPUT = "in";
@@ -138,6 +140,11 @@ public class BFB {
         weightOption.setValueSeparator('=');
         weightOption.setArgName("minWeight");
         options.addOption(weightOption);
+
+        Option combineWeightOption = new Option(COMBINE_WEIGHT, true, "Minimum weight to combine segments");
+        weightOption.setValueSeparator('=');
+        weightOption.setArgName("minCombineWeight");
+        options.addOption(combineWeightOption);
 
         Option errorOption = new Option(ERROR_MODEL, true, "Error model");
         errorOption.setValueSeparator('=');
@@ -215,6 +222,8 @@ public class BFB {
 //			w = new Weights(inputStr);
 
             double minWeight = Double.parseDouble(getOptValue(cmd, MIN_WEIGHT, "1"));
+
+            double minCombineWeight = Double.parseDouble(getOptValue(cmd, COMBINE_WEIGHT, "1"));
 
             String errorModelClassName = getOptValue(cmd, ERROR_MODEL, "NoErrorModel");
 
@@ -381,45 +390,38 @@ public class BFB {
                         if (cmd.hasOption(FOLDBACK)) {
                             FbrSolution solution = new FbrSolution();
                             int[] tmpFbrCounts = fw.getCounts();
-                            int[] fbrCounts = new int[tmpFbrCounts.length + 1];
                             int[] tmpCounts = w.getCounts();
-                            int[] counts = new int[tmpCounts.length + 1];
-
-                            fbrCounts[0] = 0;
-                            counts[0] = 1;
-                            for (int i = 0; i < tmpFbrCounts.length; i++) {
-                                fbrCounts[i + 1] = 2 * tmpFbrCounts[i];
-                                counts[i + 1] = tmpCounts[i];
-                            }
-                            fw.updateCounts(fbrCounts, 0, fbrErrorModel, minFbrWeight);
-                            w.updateCounts(counts, errorModel, minWeight);
+                            ArrayList<int[]>[] allLists = getAllDiffLengthLists(tmpCounts, tmpFbrCounts, minCombineWeight, errorModel);
+                            for (int j = 0; j < allLists[0].size(); j++) {
+                                tmpCounts = allLists[0].get(j);
+                                tmpFbrCounts = allLists[1].get(j);
+                                int[] fbrCounts = new int[tmpFbrCounts.length + 1];
+                                int[] counts = new int[tmpCounts.length + 1];
+                                fbrCounts[0] = 0;
+                                counts[0] = 1;
+                                for (int i = 0; i < tmpFbrCounts.length; i++) {
+                                    fbrCounts[i + 1] = 2 * tmpFbrCounts[i];
+                                    counts[i + 1] = tmpCounts[i];
+                                }
+                                fw.updateCounts(fbrCounts, 0, fbrErrorModel, minFbrWeight);
+                                w.updateCounts(counts, errorModel, minWeight);
+                                //System.out.println("input: " + Arrays.toString(tmpCounts) + ", " + Arrays.toString(tmpFbrCounts));
                             /*for (int j = 0; j < counts.length; j++){
                                 System.out.println("counts[" + j + "] = " + counts[j]);
                                 System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
                             }*/
-                            solution =  Signature.heaviestBFBVector(w, fw, minLength, minWeight,
+                                solution = Signature.heaviestBFBVector(w, fw, minLength, minWeight,
                                         minFbrWeight, weightDistanceModel);
-
-                            if (solution != null) {
-                                out.print("Heaviest BFB vector's count weight: " + solution.getWeight() +
-                                        ", fold-back weight: " + solution.getFbrWeight() +
-                                        " (combined: " + weightDistanceModel.combineWeights(solution.getWeight(), solution.getFbrWeight()) + ")");
-                                out.println(", counts:");
-                                out.println(Arrays.toString(solution.counts));
-                                out.println("fold-backs:");
-                                out.println(Arrays.toString(solution.displayFbrCounts()));
-                                //out.println(Arrays.toString(solution.getFbrCounts()));
-                                //int[] fbrSoln = solution.getFbrCounts();
-                                //System.out.println(Arrays.toString(solution.epsilons));
-                                /*System.out.println(fw.getWeight(1, 1, 0, 0, solution.epsilons[0]));
-                                System.out.println("0, 2 -->" + fw.getWeight(0, 2));
-                                System.out.println("0, 1 -->" + fw.getWeight(0, 1));
-                                System.out.println("0, 0 -->" + fw.getWeight(0, 0));
-
-                                System.out.println("1, 2 -->" + fw.getWeight(1, 2));
-                                System.out.println("1, 1 -->" + fw.getWeight(1, 1));
-                                System.out.println("1, 0 -->" + fw.getWeight(1, 0));*/
-                            }
+                                if (solution != null) {
+                                    out.print("Heaviest BFB vector's count weight: " + solution.getWeight() +
+                                            ", fold-back weight: " + solution.getFbrWeight() +
+                                            " (combined: " + weightDistanceModel.combineWeights(solution.getWeight(), solution.getFbrWeight()) + ")");
+                                    out.println(", counts:");
+                                    out.println(Arrays.toString(solution.counts));
+                                    out.println("fold-backs:");
+                                    out.println(Arrays.toString(solution.displayFbrCounts()));
+                                    out.println();
+                                }
                             /*int[] test = {0,0,0,9,3,3,7};
                             int[] output ={0,2,0,9,5,4,9};
                             FbrWeights testWeights = new FbrWeights(test);
@@ -432,7 +434,7 @@ public class BFB {
                             }
                             System.out.println(currWt);
                             System.out.println(Arrays.toString(fw.minCounts));*/
-
+                            }
                         }
                         else {
                             Solution solution = Signature.heaviestBFBVector(w, minLength, minWeight);
@@ -547,6 +549,91 @@ public class BFB {
             }
         }
         return false;
+    }
+
+    public static boolean canCombineCounts(int n1, int n2, double avg, double minWeight, ErrorModel errorModel){
+        return ((errorModel.weight(n1, (int) (avg + 0.5)) >= minWeight ||
+                errorModel.weight(n1, (int) (avg - 0.5)) >= minWeight) &&
+                (errorModel.weight((int) (avg + 0.5), n1) >= minWeight ||
+                        errorModel.weight((int) (avg - 0.5), n1) >= minWeight) &&
+                (errorModel.weight(n1, n2) >= minWeight &&
+                errorModel.weight(n2, n1) >= minWeight));
+    }
+
+    public static ArrayList<int[]>[] getAllDiffLengthLists(int[] n, int[] f, double minDiffWeight, ErrorModel errorModel){
+        ArrayList<double[]> currLists = new ArrayList<>();
+        ArrayList<Integer> currGroups = new ArrayList<>();
+        ArrayList<double[]> prevLists = new ArrayList<>();
+        ArrayList<Integer> prevGroups = new ArrayList<>();
+        ArrayList<int[]> currFbrs = new ArrayList<>();
+        ArrayList<int[]> prevFbrs = new ArrayList<>();
+        double[] first = new double[1];
+        first[0] = n[0];
+        int[] fbrs = new int[1];
+        fbrs[0] = f[0];
+        prevLists.add(first);
+        prevGroups.add(1);
+        prevFbrs.add(fbrs);
+        for (int l = 1; l < n.length; l++){
+            currLists.clear();
+            currGroups.clear();
+            currFbrs.clear();
+            ArrayList<Integer> indicesToAdd = new ArrayList<Integer>();
+            for (int i = 0; i < prevLists.size(); i++){
+                double[] prevCounts = prevLists.get(i);
+                double[] counts = new double[prevCounts.length + 1];
+                System.arraycopy(prevCounts, 0, counts, 0, prevCounts.length);
+                counts[prevCounts.length] = n[l];
+
+                int[] prevFbr = prevFbrs.get(i);
+                int[] fbr = new int[prevFbr.length + 1];
+                System.arraycopy(prevFbr, 0, fbr, 0, prevFbr.length);
+                fbr[prevFbr.length] = f[l];
+
+                currLists.add(counts);
+                currGroups.add(1);
+                currFbrs.add(fbr);
+
+                int prevGroupSize = prevGroups.get(i);
+                double tempAvg = (prevGroupSize * prevCounts[prevCounts.length - 1] + n[l])/(prevGroupSize + 1.0);
+                if (canCombineCounts(n[l], n[l-1], tempAvg, minDiffWeight, errorModel)){
+                    indicesToAdd.add(i);
+                }
+            }
+            for (int i = 0; i < indicesToAdd.size(); i++){
+                double[] prevCounts = prevLists.get(i);
+                int prevGroupSize = prevGroups.get(i);
+                double tempAvg = (prevGroupSize * prevCounts[prevCounts.length - 1] + n[l])/(prevGroupSize + 1.0);
+                prevCounts[prevCounts.length - 1] = tempAvg;
+
+                int[] prevFbr = prevFbrs.get(i);
+                prevFbr[prevFbr.length - 1] += f[l];
+
+
+                currLists.add(prevCounts);
+                currGroups.add(prevGroupSize + 1);
+                currFbrs.add(prevFbr);
+
+            }
+            prevLists = new ArrayList<>(currLists);
+            prevGroups = new ArrayList<>(currGroups);
+            prevFbrs = new ArrayList<>(currFbrs);
+        }
+        ArrayList<int[]> outputLists = new ArrayList<>();
+        for (int i = 0; i < currLists.size(); i++){
+            double[] currCounts = currLists.get(i);
+            int[] counts = new int[currCounts.length];
+            for (int j = 0; j < currCounts.length; j++){
+                counts[j] = (int) (currCounts[j] + 0.5);
+            }
+            outputLists.add(counts);
+        }
+
+        ArrayList<int[]>[] output = new ArrayList[2];
+        output[0] = outputLists;
+        output[1] = currFbrs;
+
+        return output;
     }
 
     private static boolean isPalindromeCenter(String str, int i, int length) {
