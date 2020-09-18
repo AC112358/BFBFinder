@@ -817,7 +817,7 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
             int maxSize = w.getMaxCount(l, nextMinWeight);
 			
 			int numSingletons = getMultiplicity(EmptyPalindrome.SINGLETON);
-
+            //System.out.println("l = " + l + ", minSize = " + minSize + "; maxSize = " + maxSize);
             if (fullSize < minSize) {
                 emptyCount = minSize - fullSize;
                 add(EmptyPalindrome.SINGLETON, emptyCount);
@@ -834,7 +834,8 @@ public class PalindromeCollection extends ArrayList<BFBPalindrome> {
                     double fbrWeight = 1;
                     if (prevFullSize >= 0) {
                         fbrWeight = currFbrWeight * fw.getWeight(l + 1, fullSize, prevFullSize, numSingletons, prevSingletons);
-                       // System.out.println("fbr weight = " + fbrWeight + " and min fbr weight = " + minFbrWeight);
+                        //System.out.println("numSingletons = " + numSingletons + "==> fbr weight = " + fbrWeight);
+                        //System.out.println(" ");
                        // System.out.println("For l = " + (l + 1) + ": weight of 0 = " + fw.getWeight(l + 1, 0) +
                         //        " and weight of 1 = " + fw.getWeight(l + 1, 1));
                     }

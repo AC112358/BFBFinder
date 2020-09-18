@@ -405,7 +405,8 @@ public class BFB {
                                 }
                                 fw.updateCounts(fbrCounts, 0, fbrErrorModel, minFbrWeight);
                                 w.updateCounts(counts, errorModel, minWeight);
-                                //System.out.println("input: " + Arrays.toString(tmpCounts) + ", " + Arrays.toString(tmpFbrCounts));
+                                //
+                                // System.out.println("input: " + Arrays.toString(tmpCounts) + ", " + Arrays.toString(tmpFbrCounts));
                             /*for (int j = 0; j < counts.length; j++){
                                 System.out.println("counts[" + j + "] = " + counts[j]);
                                 System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
@@ -453,25 +454,21 @@ public class BFB {
                         for (int i = 0; i < counts.length; i++){
                             counts[i] = 2*counts[i];
                         }
-                        for (int i = 0; i < counts.length; i++) {
-                            counts[i] += 1;
+                        fw.updateCounts(counts, -1, fbrErrorModel, minFbrWeight);
+                        if (cmd.hasOption(ALL)) {
+                            allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, -1);
+                        } else {
+                            allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, 1);
+                        }
+                            /*counts[i] += 1;
                             if (i > 0){
                                 counts[i-1] -= 1;
-                            }
-                            fw.updateCounts(counts, i, fbrErrorModel, minFbrWeight);
+                            }*/
+
                             /*for (int j = 0; j < counts.length; j++){
                                 System.out.println("counts[" + j + "] = " + counts[j]);
                                 System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
                             }*/
-                            if (cmd.hasOption(ALL)) {
-                                currNumStrings = allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, -1, currNumStrings);
-                            } else {
-                                currNumStrings  = allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, 1);
-                                if (currNumStrings == 1){
-                                    break;
-                                }
-                            }
-                        }
 //			}
                     }else {
                         if (cmd.hasOption(ALL)) {
