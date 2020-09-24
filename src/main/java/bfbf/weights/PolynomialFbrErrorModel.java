@@ -7,6 +7,12 @@ public class PolynomialFbrErrorModel extends ErrorModel{
 
     @Override
     public double weight(int trueCount, int estimatedCount) {
+        /*if (estimatedCount == -1){
+            if (trueCount > 30){
+                return 0;
+            }
+            return 1;
+        }*/
         int diff = Math.abs(estimatedCount - trueCount);
         double threshold = -0.007 * estimatedCount * estimatedCount + 0.4 * estimatedCount - 0.4;
         //System.out.println(estimatedCount + "," + diff + ": " + (1 - (diff * diff + 0.0)/(threshold * threshold)));

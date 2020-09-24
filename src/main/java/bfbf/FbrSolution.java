@@ -132,15 +132,23 @@ public class FbrSolution extends Solution {
     }
 
     public int compareToNm(FbrSolution other){
+        boolean nmSumModified = false;
+        boolean otherNmSumModified = false;
         if (nmSum == -1 && counts.length > 0){
             nmSum = counts[0] + epsilons[0];
+            nmSumModified = true;
         }
         if (other.nmSum == -1 && counts.length > 0){
             other.setNmSum(other.counts[0] + epsilons[0]);
+            otherNmSumModified = true;
         }
         int nmSumDiff = nmSum - other.nmSum;
-        nmSum = -1;
-        other.nmSum = -1;
+        if (nmSumModified) {
+            nmSum = -1;
+        }
+        if (otherNmSumModified) {
+            other.nmSum = -1;
+        }
         return nmSumDiff;
     }
 

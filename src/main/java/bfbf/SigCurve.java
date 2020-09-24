@@ -32,7 +32,6 @@ public class SigCurve {
             int maxIx = prev.findSmallerWeightIx(minWeight / currWeight);
             int minIx = prev.findMaxSignature(currCount, maxIx);
             for (int j = minIx; j < maxIx; ++j) {
-                //System.out.println(prev.sigs);
                 s.setTo(prev.sigs.get(j));
                 if (s.minDecrement(currCount)) {
                     double weight = currWeight * prev.weights.get(j);

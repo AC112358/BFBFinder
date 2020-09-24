@@ -54,11 +54,19 @@ public abstract class ErrorModel {
     public Weights getWeights(int[] counts, double minWeight) {
         Weights w = new Weights(counts.length);
         for (int i = 0; i < counts.length; ++i) {
-            int minValue = minRealValue(counts[i], minWeight);
-            int maxValue = maxRealValue(counts[i], minWeight);
+            int minValue = counts[i];
+            int maxValue = counts[i];
+            if (counts[i] >= 0) {
+                minValue = minRealValue(counts[i], minWeight);
+                maxValue = maxRealValue(counts[i], minWeight);
+            }
             double[] countWeights = new double[maxValue - minValue + 1];
             for (int j = minValue; j <= maxValue; ++j) {
-                countWeights[j - minValue] = weight(j, counts[i]);
+                if (counts[i] >= 0) {
+                    countWeights[j - minValue] = weight(j, counts[i]);
+                }else{
+                    countWeights[j - minValue] = 1;
+                }
             }
             w.setWeights(i, minValue, countWeights);
         }

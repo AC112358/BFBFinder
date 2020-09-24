@@ -4,6 +4,7 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,11 +62,15 @@ public class Weights {
         this(inputStr, new NoErrorModel(), 1);
     }
 
-    public Weights(String inputStr, ErrorModel errorModel, double minWeight) throws IllegalArgumentException {
+    public Weights(String inputStr, ErrorModel errorModel, double minWeight){
+        this(inputStr, errorModel, minWeight, countVecPtrn);
+    }
+
+    public Weights(String inputStr, ErrorModel errorModel, double minWeight, Pattern countVecPtrn) throws IllegalArgumentException {
         inputStr = inputStr.trim();
         Matcher matcher;
         matcher = countVecPtrn.matcher(inputStr);
-
+        matcher = countVecPtrn.matcher(inputStr);
         if (matcher.matches()) {
             // Input is of a count vector format
             String[] countStrs = inputStr.replaceAll("[\\[\\]]", "").split("[,\\s]\\s*");

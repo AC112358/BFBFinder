@@ -17,7 +17,7 @@ public class FbrWeights extends Weights {
 	protected int middleCharIndex;
 
 	protected static final Pattern countVecPtrn = Pattern.compile(
-			"\\[\\s*(\\d+(\\s*,\\s*\\d+)*)?\\s*\\]");
+			"\\[\\s*((\\d+|-1)(\\s*,\\s*(\\d+|-1))*)?\\s*\\]");
 
     protected FbrWeights(int length) {
         super(length);
@@ -35,7 +35,7 @@ public class FbrWeights extends Weights {
     }
 
     public FbrWeights(String inputStr, ErrorModel errorModel, double minWeight) throws IllegalArgumentException {
-		super(inputStr, errorModel, minWeight);
+		super(inputStr, errorModel, minWeight, countVecPtrn);
 		middleCharIndex = -1;
     	//error = errorModel;
 		//input = inputStr;
@@ -100,7 +100,10 @@ public class FbrWeights extends Weights {
 	}
 
 	public double getWeight(int ix, int count) {
-		return super.getWeight(ix, 2 * (count/2));
+    	if (heaviestCounts[ix] < 0){
+    		return 1;
+		}
+    	return super.getWeight(ix, 2 * (count/2));
 	}
 
 

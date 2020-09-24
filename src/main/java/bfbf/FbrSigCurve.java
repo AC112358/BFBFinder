@@ -7,10 +7,7 @@ import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class FbrSigCurve{
     protected List<nmSignaturePair> nmSigs;
@@ -117,7 +114,10 @@ public class FbrSigCurve{
         this.minFbrWeight = prev.minFbrWeight;
         nmStreaks = new ArrayList<>();
         nmRegions = new ArrayList<>();
-
+        //boolean isValidFbr = (fw.getHeaviestCount(l) > -1);
+        //boolean isPreValidFbr = (l < end - 1 && fw.getHeaviestCount(l + 1) > -1);
+        boolean isValidFbr = (l > 0 && l < end - 1 && fw.getHeaviestCount(l) > -1);
+        boolean isPreValidFbr = (l < end - 1 && fw.getHeaviestCount(l + 1) > -1);
         int maxCount = w.getMaxCount(l);
         for (int currCount = w.getMinCount(l); currCount <= maxCount; ++currCount) {
             int numElmts = 0;
@@ -129,13 +129,19 @@ public class FbrSigCurve{
                     s.setTo(prev.nmSigs.get(j).sig);
                     int prevNmSum = prev.nmSigs.get(j).nmSum;
                     int prevN = 0;
-                    if (prevNmSum > 0) {
-                        prevN = prev.counts.get(j);
-                    }
+                    prevN = prev.counts.get(j);
                     int prevM = prevNmSum - prevN;
                     double weight = currWeight * prev.weights.get(j);
-                    int minFbrCount = fw.getMinCount(l, minFbrWeight, prevN, currCount, prevM);
-                    int maxFbrCount = fw.getMaxCount(l, minFbrWeight, prevN, currCount, prevM);
+                    int minFbrCount = 0;
+                    int maxFbrCount = 0;
+                    if (isPreValidFbr) {
+                        minFbrCount = 0;
+                        maxFbrCount = currCount - 1;
+                    }
+                    if (isValidFbr) {
+                        minFbrCount = fw.getMinCount(l, minFbrWeight, prevN, currCount, prevM);
+                        maxFbrCount = fw.getMaxCount(l, minFbrWeight, prevN, currCount, prevM);
+                    }
                     minFbrCount = Math.max(minFbrCount, 0);
                     if (l < end - 1){
                         maxFbrCount = Math.min(maxFbrCount, currCount - 1);
@@ -145,13 +151,19 @@ public class FbrSigCurve{
                         if (!s.minTwoDecrements(currCount, currCount - currEpsilon)) {
                             continue;
                         }
-                        double currFbrWeight = fw.getWeight(l, prevN, prevM, currCount, currEpsilon);
+                        double currFbrWeight = 1.0;
+                        if (isValidFbr) {
+                            currFbrWeight = fw.getWeight(l, prevN, prevM, currCount, currEpsilon);
+                        }
                         double fbrWeight = currFbrWeight * prev.fbrWeights.get(j);
-                        nmSignaturePair searchKey = new nmSignaturePair(currCount + currEpsilon, s);
-                        //int insertionIx = Collections.binarySearch(sigs, s);
-                        int nmIx = Collections.binarySearch(nmRegions,currCount + currEpsilon);
-                        int insertionIx = Collections.binarySearch(nmSigs, searchKey);
                         int tempNmSum = currCount + currEpsilon;
+                        if (!isPreValidFbr){
+                            tempNmSum = 0;
+                        }
+                        nmSignaturePair searchKey = new nmSignaturePair(tempNmSum, s);
+                        //int insertionIx = Collections.binarySearch(sigs, s);
+                        int nmIx = Collections.binarySearch(nmRegions, tempNmSum);
+                        int insertionIx = Collections.binarySearch(nmSigs, searchKey);
                         if (nmIx < 0) {
                             insertionIx = -insertionIx - 1;
                             nmSigs.add(insertionIx, new nmSignaturePair(tempNmSum,
@@ -170,12 +182,12 @@ public class FbrSigCurve{
                         } else if (insertionIx < 0) {
                             insertionIx = -insertionIx - 1;
                             if (insertionIx < nmSigs.size() &&
-                                    dist.firstPairDominates(weights.get(insertionIx), fbrWeights.get(insertionIx),
-                                            weight, fbrWeight)) {
+                                    !dist.firstPairDominates(weight, fbrWeight, weights.get(insertionIx), fbrWeights.get(insertionIx)
+                                            )) {
                                 // the next signature has a higher weight
                                 continue;
                             } else {
-                                nmSigs.add(insertionIx, new nmSignaturePair(currCount + currEpsilon,
+                                nmSigs.add(insertionIx, new nmSignaturePair(tempNmSum,
                                         new Signature(s)));
                                 weights.insert(insertionIx, weight);
                                 fbrWeights.insert(insertionIx, fbrWeight);
@@ -190,7 +202,7 @@ public class FbrSigCurve{
                         }
                         for (int p = insertionIx - 1; p >= 0 &&
                                 dist.firstPairStrictlyDominates(weight, fbrWeight, weights.get(p), fbrWeights.get(p)) &&
-                                nmSigs.get(p).nmSum == currCount + currEpsilon;
+                                nmSigs.get(p).nmSum ==  tempNmSum;
                              --p) {
                             nmSigs.remove(p);
                             weights.removeAt(p);

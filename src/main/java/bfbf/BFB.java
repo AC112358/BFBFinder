@@ -240,7 +240,6 @@ public class BFB {
             Class<?> fbrClazz = Class.forName(ErrorModel.class.getPackageName() + "." + fbrErrorModelClassName);
             Constructor<?> fbrCtor = fbrClazz.getConstructor();
             fbrErrorModel = (ErrorModel) fbrCtor.newInstance();
-
             Distances weightDistanceModel = null;
             String weightDistanceModelClassName = getOptValue(cmd, DISTANCE, "Distances");
 
