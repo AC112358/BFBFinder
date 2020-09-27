@@ -25,7 +25,7 @@ public class Distances {
     public boolean firstPairDominates(double countWeight1, double fbrWeight1,
                                  double countWeight2, double fbrWeight2){
         return (firstPairStrictlyDominates(countWeight1, fbrWeight1, countWeight2, fbrWeight2) ||
-                countWeight1 == countWeight2 && fbrWeight1 == fbrWeight2);
+                (countWeight1 >= countWeight2 && fbrWeight1 >= fbrWeight2));
     }
 
     public boolean firstPairStrictlyDominates(double countWeight1, double fbrWeight1,
