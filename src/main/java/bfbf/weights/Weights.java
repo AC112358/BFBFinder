@@ -56,6 +56,7 @@ public class Weights {
         this.minCounts = w.minCounts;
         this.weights = w.weights;
         this.heaviestCounts = w.heaviestCounts;
+        this.counts = w.counts;
     }
 
     public Weights(String inputStr) throws IllegalArgumentException {

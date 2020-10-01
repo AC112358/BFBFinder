@@ -1,53 +1,47 @@
 package bfbf.weights;
 
-import bfbf.weights.ErrorModel;
-import bfbf.weights.Weights;
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FbrWeights extends Weights {
 	//protected String input;
 	//protected ErrorModel error;
-	protected int middleCharIndex;
+	protected int numLoopsIndex;
 
 	protected static final Pattern countVecPtrn = Pattern.compile(
 			"\\[\\s*((\\d+|-1)(\\s*,\\s*(\\d+|-1))*)?\\s*\\]");
 
     protected FbrWeights(int length) {
         super(length);
-        middleCharIndex = -1;
+        numLoopsIndex = -1;
     }
 
     public FbrWeights(int[] counts) {
         super(counts);
-		middleCharIndex = -1;
+		numLoopsIndex = -1;
     }
 
     public FbrWeights(String inputStr) throws IllegalArgumentException {
         super(inputStr);
-		middleCharIndex = -1;
+		numLoopsIndex = -1;
     }
 
     public FbrWeights(String inputStr, ErrorModel errorModel, double minWeight) throws IllegalArgumentException {
 		super(inputStr, errorModel, minWeight, countVecPtrn);
-		middleCharIndex = -1;
+		numLoopsIndex = -1;
     	//error = errorModel;
 		//input = inputStr;
     }
 
+    public void setNumLoopsIndex(int newIndex){
+    	numLoopsIndex = newIndex;
+	}
 
 	public void updateCounts(int[] counts, int incrementIndex, ErrorModel errorModel, double minWeight){
     	Weights w = errorModel.getWeights(counts, minWeight);
     	this.minCounts = w.minCounts;
     	this.weights = w.weights;
     	this.heaviestCounts = w.heaviestCounts;
-		middleCharIndex = incrementIndex;
+		numLoopsIndex = incrementIndex;
 	}
 /*
     public String getInput(){
@@ -67,8 +61,8 @@ public class FbrWeights extends Weights {
         Weights w = new Weights(str);
     }
 
-    public int getMiddleCharIndex(){
-    	return middleCharIndex;
+    public int getNumLoopsIndex(){
+    	return numLoopsIndex;
 	}
 
 	public double getWeight(int ix, int fullSize, int prevFullSize, int currSingletons, int prevSingletons){

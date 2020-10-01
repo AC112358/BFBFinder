@@ -18,6 +18,8 @@ the value is to 0 more errors are allowed. Good chances there are still some bug
 "-E=<error model class name>" to set the foldback count error model, and "-W=<min weight>" to set the minimum foldback
 weight. They function similarly to count vectors, where foldback weight bounds are calculated separately from count
 vector weight bounds
+- If "-f" is included, you can also explore the neighborhood of combining adjacent groups of segments that are
+within some distance of each other, specified by "-c=<min combine weight>", according to the count weight function
 
 Usage:
 
@@ -55,6 +57,11 @@ counts, according to the Poisson error model:
 
 6. Getting all BFB strings corresponding to the given counts and foldback reads:
 -s -a -f=[0,1] [1,2]
+
+6. Getting all BFB strings with counts at least 0.9 with respect to the given counts, and foldback read counts at least
+0.3 with respect to the given foldback read vector, according to the polynomial count and fbr model respectively.
+Adjacent segments can be combined if they are within 0.001 of each other.
+-s -a -c=0.001 -e=PolynomialCountErrorModel -E=PolynomialFbrErrorModel -w=0.9 -W=0.3 -f=[1,0,2] [3,3,4]
 
  */
 
@@ -421,6 +428,7 @@ public class BFB {
                                     out.println("fold-backs:");
                                     out.println(Arrays.toString(solution.displayFbrCounts()));
                                     out.println();
+                                    break;
                                 }
                             /*int[] test = {0,0,0,9,3,3,7};
                             int[] output ={0,2,0,9,5,4,9};
@@ -449,16 +457,36 @@ public class BFB {
                 case STRING:
                     if (cmd.hasOption(FOLDBACK)){
                         int currNumStrings = 0;
-                        int[] counts = fw.getCounts();
-                        for (int i = 0; i < counts.length; i++){
-                            counts[i] = 2*counts[i];
-                        }
-                        fw.updateCounts(counts, -1, fbrErrorModel, minFbrWeight);
-                        if (cmd.hasOption(ALL)) {
-                            allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, -1);
-                        } else {
-                            allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, 1);
-                        }
+                        int[] tmpFbrCounts = fw.getCounts();
+                        int[] tmpCounts = w.getCounts();
+                        ArrayList<int[]>[] allLists = getAllDiffLengthLists(tmpCounts, tmpFbrCounts, minCombineWeight, errorModel);
+                        for (int j = 0; j < allLists[0].size(); j++) {
+                            if (j > 0 && Arrays.equals(allLists[0].get(j-1), allLists[0].get(j)) &&
+                                Arrays.equals(allLists[1].get(j-1), allLists[1].get(j))){
+                                continue;
+                            }
+                            tmpCounts = allLists[0].get(j);
+                            tmpFbrCounts = allLists[1].get(j);
+                            int[] fbrCounts = new int[tmpFbrCounts.length];
+                            int[] counts = new int[tmpCounts.length];
+                            for (int i = 0; i < tmpFbrCounts.length; i++) {
+                                fbrCounts[i] = 2 * tmpFbrCounts[i];
+                                counts[i] = tmpCounts[i];
+                            }
+                            fw.updateCounts(fbrCounts, 0, fbrErrorModel, minFbrWeight);
+                            w.updateCounts(counts, errorModel, minWeight);
+                            if (cmd.hasOption(ALL)) {
+                                if (j == allLists[0].size() - 1){
+                                    fw.setNumLoopsIndex(-1);
+                                }
+                                currNumStrings = allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, -1, currNumStrings);
+                            } else {
+                                fw.setNumLoopsIndex(-1);
+                                currNumStrings = allBFBStrings(w, fw, minWeight, minFbrWeight, minLength, 1, currNumStrings);
+                                if (currNumStrings > 0){
+                                    break;
+                                }
+                            }
                             /*counts[i] += 1;
                             if (i > 0){
                                 counts[i-1] -= 1;
@@ -469,6 +497,7 @@ public class BFB {
                                 System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
                             }*/
 //			}
+                        }
                     }else {
                         if (cmd.hasOption(ALL)) {
                             allBFBStrings(w, minWeight, minLength);
@@ -741,7 +770,7 @@ public class BFB {
                 stream, maxStrings);
         handler.handle(new PalindromeCollection(), w.length() - 1, 1, 1, -1, -1);
         currNumStrings += handler.numOfStrings();
-        if (fw.getMiddleCharIndex() == -1 || fw.getMiddleCharIndex() == w.length() - 1) {
+        if (fw.getNumLoopsIndex() == -1 || fw.getNumLoopsIndex() == w.length() - 1) {
             stream.println("Total number of strings: " + currNumStrings);
         }
         return currNumStrings;

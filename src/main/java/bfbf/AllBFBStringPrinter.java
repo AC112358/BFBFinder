@@ -39,10 +39,8 @@ public class AllBFBStringPrinter extends FoldingHandler {
             collection.unwrap();
         } else if (l < -1) {
             String s = collection.get(0).halfString();
-            if (fw.getMiddleCharIndex() < 0 || s.charAt(s.length() - 1) == (char) ('A' + fw.getMiddleCharIndex())) {
-                stream.println(s);
-                ++stringCount;
-            }
+            stream.println(s);
+            ++stringCount;
             continueEnumeration = stringCount < maxStrings;
         } else {
             collection.wrap();
