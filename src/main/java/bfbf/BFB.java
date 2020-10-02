@@ -505,8 +505,42 @@ public class BFB {
                             allBFBStrings(w, minWeight, minLength, 1);
                         }
                     }
+                    break;
                 default: // DECISION
-                    out.println("Result: " + (Signature.heaviestBFBVector(w, minLength, minWeight) != null));
+                    if (cmd.hasOption(FOLDBACK)) {
+                        FbrSolution solution = new FbrSolution();
+                        int[] tmpFbrCounts = fw.getCounts();
+                        int[] tmpCounts = w.getCounts();
+                        ArrayList<int[]>[] allLists = getAllDiffLengthLists(tmpCounts, tmpFbrCounts, minCombineWeight, errorModel);
+                        for (int j = 0; j < allLists[0].size(); j++) {
+                            tmpCounts = allLists[0].get(j);
+                            tmpFbrCounts = allLists[1].get(j);
+                            int[] fbrCounts = new int[tmpFbrCounts.length + 1];
+                            int[] counts = new int[tmpCounts.length + 1];
+                            fbrCounts[0] = 0;
+                            counts[0] = 1;
+                            for (int i = 0; i < tmpFbrCounts.length; i++) {
+                                fbrCounts[i + 1] = 2 * tmpFbrCounts[i];
+                                counts[i + 1] = tmpCounts[i];
+                            }
+                            fw.updateCounts(fbrCounts, 0, fbrErrorModel, minFbrWeight);
+                            w.updateCounts(counts, errorModel, minWeight);
+                            //
+                            // System.out.println("input: " + Arrays.toString(tmpCounts) + ", " + Arrays.toString(tmpFbrCounts));
+                            /*for (int j = 0; j < counts.length; j++){
+                                System.out.println("counts[" + j + "] = " + counts[j]);
+                                System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
+                            }*/
+                            solution = Signature.heaviestBFBVector(w, fw, minLength, minWeight,
+                                    minFbrWeight, weightDistanceModel);
+                            if (solution != null) {
+                                break;
+                            }
+                        }
+                        out.println("Result: " + (solution != null));
+                    }else {
+                        out.println("Result: " + (Signature.heaviestBFBVector(w, minLength, minWeight) != null));
+                    }
             }
 
         }

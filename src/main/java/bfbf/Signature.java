@@ -309,14 +309,12 @@ public class Signature implements Comparable<Signature> {
      */
 
     public static Solution heaviestBFBVector(Weights weights, int minLength, double minWeight) {
-
         double bestWeight = 2;
         SigCurve[] bestCurves = null;
         int bestStart = weights.length();
-
         for (int start = weights.length() - minLength; start >= 0; --start) {
             SigCurve[] curves = lowerBoundSigCurves(weights, minWeight, start, start + minLength);
-            if (curves[minLength].size() > 0) {
+            if (curves[minLength] != null && curves[minLength].size() > 0) {
                 if (curves[minLength].weights.get(0) < bestWeight) {
                     bestWeight = curves[minLength].weights.get(0);
                     bestCurves = curves;
@@ -324,7 +322,6 @@ public class Signature implements Comparable<Signature> {
                 }
             }
         }
-
         if (bestCurves != null) {
             int[] counts = new int[weights.length()];
             for (int l = bestStart + minLength - 1; l >= bestStart; --l) {
@@ -333,6 +330,7 @@ public class Signature implements Comparable<Signature> {
         } else {
             return null;
         }
+
 
 
         List<Solution> currSolutions = new ArrayList<>();
@@ -806,8 +804,8 @@ public class Signature implements Comparable<Signature> {
         for (int start = weights.length() - minLength; start >= 0; --start) {
             FbrSigCurve[] curves = fbrLowerBoundSigCurves(weights, fbrWeights, minWeight, minFbrWeight,
                     start, start + minLength, distance);
-            if (curves[minLength].size() > 0) {
-                if (curves[minLength].weights.get(0) < bestWeight) {
+            if (curves[minLength] != null && curves[minLength].size() > 0) {
+                if (curves[minLength].weights.size() > 0 && curves[minLength].weights.get(0) < bestWeight) {
                     bestWeight = curves[minLength].weights.get(0);
                     bestCurves = curves;
                     bestStart = start;
@@ -994,6 +992,9 @@ public class Signature implements Comparable<Signature> {
             System.arraycopy(optSolution.counts, 0, counts, optSolutionStart, optSolution.counts.length);
             optSolution.counts = counts;
         }*/
+        if (optSolution == null){
+            return null;
+        }
         int[] tmpCounts = new int[optSolution.counts.length - 1];
         int[] tmpFbrs = new int[optSolution.counts.length - 1];
         System.arraycopy(optSolution.counts, 1, tmpCounts, 0, tmpCounts.length);

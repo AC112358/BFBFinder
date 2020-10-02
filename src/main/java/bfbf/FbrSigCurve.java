@@ -438,7 +438,6 @@ public class FbrSigCurve{
             //System.out.println(currCurve.counts);
             //System.out.println(currCurve.epsilons);
         }
-
         return curves;
     }
     public int size() {
