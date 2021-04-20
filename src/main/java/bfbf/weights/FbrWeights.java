@@ -32,6 +32,13 @@ public class FbrWeights extends Weights {
 		//input = inputStr;
     }
 
+	public FbrWeights(String inputStr, ErrorModel errorModel, double minWeight, Pattern countVecPtrn) throws IllegalArgumentException {
+		super(inputStr, errorModel, minWeight, countVecPtrn);
+		numLoopsIndex = -1;
+		//error = errorModel;
+		//input = inputStr;
+	}
+
     public void setNumLoopsIndex(int newIndex){
     	numLoopsIndex = newIndex;
 	}
@@ -70,6 +77,8 @@ public class FbrWeights extends Weights {
     		return 1;
 		}
 		int count = prevFullSize - fullSize + prevSingletons + currSingletons;
+		//System.out.println("fullSize = " + fullSize + ", prevFullSize = " + prevFullSize +
+		//		", prevSingletons = " + prevSingletons + ", currSingletons = " + currSingletons);
 		//System.out.println("foldback count for " + ix + " equals " + count);
 		return getWeight(ix, count);
 	}

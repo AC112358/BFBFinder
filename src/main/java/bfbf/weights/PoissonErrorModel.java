@@ -69,8 +69,8 @@ public class PoissonErrorModel extends ErrorModel {
 
     @Override
     public double weight(int trueCount, int estimatedCount) {
-        return Math.exp(poissonProbabilityApproximation(trueCount + 0.5, estimatedCount)
-                - poissonProbabilityApproximation(trueCount + 0.5, trueCount));
+            return Math.exp(poissonProbabilityApproximation(trueCount + 0.5, estimatedCount)
+                    - poissonProbabilityApproximation(trueCount + 0.5, trueCount));
     }
 
     public String toString() {

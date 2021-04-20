@@ -123,8 +123,48 @@ public class FbrSolution extends Solution {
         return fbrCounts;
     }
 
+    public int[] getFbrCountsNeg(){
+        int[] fbrCounts = new int[counts.length];
+        for (int l = counts.length - 1; l >= 0; l--) {
+            if (l == 0){
+                fbrCounts[l] = counts[l] - 1;
+                continue;
+            }
+            fbrCounts[l] = counts[l] - (counts[l - 1] - epsilons[l - 1]);
+        }
+        return fbrCounts;
+    }
+
+    public int[] getFbrCountsPos(){
+        int[] fbrCountsPos = new int[counts.length];
+        int[] fbrCountsNeg = getFbrCountsNeg();
+        int[] fbrCounts = getFbrCounts();
+        for (int l = counts.length - 1; l >= 0; l--) {
+            fbrCountsPos[l] = fbrCounts[l] - fbrCountsNeg[l];
+        }
+        return fbrCountsPos;
+    }
+
+
+
     public int[] displayFbrCounts(){
         int[] fbrCounts = getFbrCounts();
+        for (int i = 0; i < fbrCounts.length; i++){
+            fbrCounts[i] /= 2;
+        }
+        return fbrCounts;
+    }
+
+    public int[] displayFbrCountsPos(){
+        int[] fbrCounts = getFbrCountsPos();
+        for (int i = 0; i < fbrCounts.length; i++){
+            fbrCounts[i] /= 2;
+        }
+        return fbrCounts;
+    }
+
+    public int[] displayFbrCountsNeg(){
+        int[] fbrCounts = getFbrCountsNeg();
         for (int i = 0; i < fbrCounts.length; i++){
             fbrCounts[i] /= 2;
         }

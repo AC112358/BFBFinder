@@ -282,7 +282,7 @@ public class FbrSigCurve{
         //boolean isPostValidFbr = (l > 0 && fw.getHeaviestCount(l - 1) > -1);
         int maxCount = w.getMaxCount(l);
         for (int currCount = w.getMinCount(l); currCount <= maxCount; ++currCount) {
-            //System.out.println("\t currCount = " + currCount);
+            //System.out.println("currCount = " + currCount);
             int numElmts = 0;
             double currWeight = w.getWeight(l, currCount);
             for (int i = 0; i < prev.nmStreaks.size(); i++) {
@@ -310,7 +310,7 @@ public class FbrSigCurve{
                     }
                     minFbrCount = Math.max(minFbrCount, 0);
                     if (l < end - 1){
-                        maxFbrCount = Math.min(maxFbrCount, prevN - 1);
+                        maxFbrCount = Math.min(maxFbrCount, currCount - 1);
                     }
                     if (l == end - 1){
                         minFbrCount = currCount;
@@ -348,13 +348,16 @@ public class FbrSigCurve{
 
                         double currFbrWeight = 1.0;
                         if (isValidFbr) {
-                            currFbrWeight = fw.getWeight(l, prevN, prevM, currCount, currEpsilon);
+                            currFbrWeight = fw.getWeight(l, prevN, currCount, prevM, currEpsilon);
+                            //System.out.println("\t currFbrWeight = " + currFbrWeight);
+                            //System.out.println("\t currEpsilon = " + currEpsilon);
                         }
                         double fbrWeight = currFbrWeight * prev.fbrWeights.get(j);
                         int tempNmSum = currCount + tempEpsilon;
                         if (!isPreValidFbr){
                             tempNmSum = 0;
                         }
+
                         nmSignaturePair searchKey = new nmSignaturePair(tempNmSum, s);
                         //int insertionIx = Collections.binarySearch(sigs, s);
                         int nmIx = Collections.binarySearch(nmRegions, tempNmSum);

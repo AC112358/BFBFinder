@@ -68,10 +68,7 @@ Adjacent segments can be combined if they are within 0.001 of each other.
 import bfbf.distances.Distances;
 import bfbf.palindromes.BFBPalindrome;
 import bfbf.palindromes.PalindromeCollection;
-import bfbf.weights.ErrorModel;
-import bfbf.weights.FbrWeights;
-import bfbf.weights.NoErrorModel;
-import bfbf.weights.Weights;
+import bfbf.weights.*;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.cli.CommandLine;
@@ -262,7 +259,12 @@ public class BFB {
                     if (fbrInputFile.isFile()) {
                         fbrVect = fileContent(fbrInputFile).trim();
                     }
-                    fw = new FbrWeights(fbrVect, fbrErrorModel, minFbrWeight);
+                    if (!fbrVect.contains("][")){
+                        fw = new FbrWeights(fbrVect, fbrErrorModel, minFbrWeight);
+                    }
+                    else{
+                        fw = new FbrPosNegWeights(fbrVect, fbrErrorModel, minFbrWeight);
+                    }
                 } catch (IllegalArgumentException e) {
                     if (fbrInputFile.isFile()) {
                         fbrVect = " in " + fbrInputFile.getAbsolutePath();
@@ -395,28 +397,59 @@ public class BFB {
                     } else {
                         if (cmd.hasOption(FOLDBACK)) {
                             FbrSolution solution = new FbrSolution();
-                            int[] tmpFbrCounts = fw.getCounts();
                             int[] tmpCounts = w.getCounts();
-                            ArrayList<int[]>[] allLists = getAllDiffLengthLists(tmpCounts, tmpFbrCounts, minCombineWeight, errorModel);
-                            for (int j = 0; j < allLists[0].size(); j++) {
-                                tmpCounts = allLists[0].get(j);
-                                tmpFbrCounts = allLists[1].get(j);
-                                int[] fbrCounts = new int[tmpFbrCounts.length + 1];
+                            if (! (fw instanceof FbrPosNegWeights)) {
+                                int[] tmpFbrCounts = fw.getCounts();
+                                ArrayList<int[]>[] allLists = getAllDiffLengthLists(tmpCounts, tmpFbrCounts, minCombineWeight, errorModel);
+                                for (int j = 0; j < allLists[0].size(); j++) {
+                                    tmpCounts = allLists[0].get(j);
+                                    tmpFbrCounts = allLists[1].get(j);
+                                    int[] fbrCounts = new int[tmpFbrCounts.length + 1];
+                                    int[] counts = new int[tmpCounts.length + 1];
+                                    fbrCounts[0] = 0;
+                                    counts[0] = 1;
+                                    for (int i = 0; i < tmpFbrCounts.length; i++) {
+                                        fbrCounts[i + 1] = 2 * tmpFbrCounts[i];
+                                        counts[i + 1] = tmpCounts[i];
+                                    }
+                                    fw.updateCounts(fbrCounts, 0, fbrErrorModel, minFbrWeight);
+                                    w.updateCounts(counts, errorModel, minWeight);
+                                    System.out.println(Arrays.toString(counts));
+                                    System.out.println(Arrays.toString(fbrCounts));
+                                    solution = Signature.heaviestBFBVector(w, fw, minLength, minWeight,
+                                            minFbrWeight, weightDistanceModel);
+                                    if (solution != null) {
+                                        out.print("Heaviest BFB vector's count weight: " + solution.getWeight() +
+                                                ", fold-back weight: " + solution.getFbrWeight() +
+                                                " (combined: " + weightDistanceModel.combineWeights(solution.getWeight(), solution.getFbrWeight()) + ")");
+                                        out.println(", counts:");
+                                        out.println(Arrays.toString(solution.counts));
+                                        out.println("fold-backs:");
+                                        out.println(Arrays.toString(solution.displayFbrCounts()));
+                                        out.println();
+                                        break;
+                                    }
+                                }
+                            }else {
+                                int[] tmpFbrCountsPos = ((FbrPosNegWeights)fw).getPosCounts();
+                                int[] tmpFbrCountsNeg = ((FbrPosNegWeights)fw).getNegCounts();
+                                int[] fbrCountsPos = new int[tmpFbrCountsPos.length + 1];
+                                int[] fbrCountsNeg = new int[tmpFbrCountsNeg.length + 1];
+                                int[] fbrCountsTot = new int[tmpFbrCountsNeg.length + 1];
                                 int[] counts = new int[tmpCounts.length + 1];
-                                fbrCounts[0] = 0;
+                                fbrCountsPos[0] = 0;
+                                fbrCountsNeg[0] = 0;
+                                fbrCountsTot[0] = 0;
                                 counts[0] = 1;
-                                for (int i = 0; i < tmpFbrCounts.length; i++) {
-                                    fbrCounts[i + 1] = 2 * tmpFbrCounts[i];
+                                for (int i = 0; i < tmpCounts.length; i++) {
+                                    fbrCountsPos[i + 1] = 2 * tmpFbrCountsPos[i];
+                                    fbrCountsNeg[i + 1] = 2 * tmpFbrCountsNeg[i];
+                                    fbrCountsTot[i + 1] = fbrCountsPos[i + 1] + fbrCountsNeg[i + 1];
                                     counts[i + 1] = tmpCounts[i];
                                 }
-                                fw.updateCounts(fbrCounts, 0, fbrErrorModel, minFbrWeight);
+                                ((FbrPosNegWeights)fw).updateCounts(fbrCountsPos, fbrCountsNeg,0, fbrErrorModel, minFbrWeight);
+                                fw.updateCounts(fbrCountsTot, 0, fbrErrorModel, minFbrWeight);
                                 w.updateCounts(counts, errorModel, minWeight);
-                                //
-                                // System.out.println("input: " + Arrays.toString(tmpCounts) + ", " + Arrays.toString(tmpFbrCounts));
-                            /*for (int j = 0; j < counts.length; j++){
-                                System.out.println("counts[" + j + "] = " + counts[j]);
-                                System.out.println("weight of count = " + fw.getWeight(j, counts[j]));
-                            }*/
                                 solution = Signature.heaviestBFBVector(w, fw, minLength, minWeight,
                                         minFbrWeight, weightDistanceModel);
                                 if (solution != null) {
@@ -426,10 +459,18 @@ public class BFB {
                                     out.println(", counts:");
                                     out.println(Arrays.toString(solution.counts));
                                     out.println("fold-backs:");
-                                    out.println(Arrays.toString(solution.displayFbrCounts()));
-                                    out.println();
+                                    if(fw instanceof FbrPosNegWeights) {
+                                        out.println(Arrays.toString(solution.displayFbrCountsPos()));
+                                        out.println(Arrays.toString(solution.displayFbrCountsNeg()));
+                                        out.println();
+                                    }else{
+                                        out.println(Arrays.toString(solution.displayFbrCounts()));
+                                        out.println();
+                                    }
                                     break;
                                 }
+                            }
+
                             /*int[] test = {0,0,0,9,3,3,7};
                             int[] output ={0,2,0,9,5,4,9};
                             FbrWeights testWeights = new FbrWeights(test);
@@ -442,9 +483,7 @@ public class BFB {
                             }
                             System.out.println(currWt);
                             System.out.println(Arrays.toString(fw.minCounts));*/
-                            }
-                        }
-                        else {
+                        } else {
                             Solution solution = Signature.heaviestBFBVector(w, minLength, minWeight);
                             if (solution != null) {
                                 out.println(solution.toString());
