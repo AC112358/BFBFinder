@@ -886,24 +886,50 @@ public class Signature implements Comparable<Signature> {
                             minM = fbrWeights.getMinCount(l+1, minFbrWeight, n, prevSolution.counts[0], prevSolution.epsilons[0]);
                             minM = Math.max(minM, 0);
                             maxM = fbrWeights.getMaxCount(l+1, minFbrWeight, n, prevSolution.counts[0], prevSolution.epsilons[0]);
-                            maxM = Math.min(maxM, n - 1);
+                            //System.out.println("at l = " + l + ", prevSolution counts = " + prevSolution.counts[0]);
+                            //System.out.println("\t prevSolution epsilons = " + prevSolution.epsilons[0]);
+                            //System.out.println("\t maxM = " + maxM + ", n = " + n);
+                            //System.out.println("\t Initial minM = " + minM);
+                            //maxM = Math.min(maxM, n - 1);
                             currFbrWeight = fbrWeights.getWeight(l+1, n, prevSolution.counts[0], minM, prevSolution.epsilons[0]) * prevSolution.getFbrWeight();
+                            boolean wasInLoop = false;
                             while (minM < maxM && !distance.firstPairDominates(currWeight, currFbrWeight,
                                     minWeight, minFbrWeight)){
-                                currFbrWeight = fbrWeights.getWeight(l+1, n, prevSolution.counts[0], minM, prevSolution.epsilons[0]) * prevSolution.getFbrWeight();
+                                wasInLoop = true;
+                                int fbrCount = prevSolution.counts[0] - n + prevSolution.epsilons[0] + minM;
+                                     //prevFullSize - fullSize + prevSingletons + currSingletons
+                                int fbrCountNeg = prevSolution.counts[0] - (n -  minM);//prevFullSize - (fullSize - currSingletons);
+                                int fbrCountPos = fbrCount - fbrCountNeg;
+                                //System.out.println("minM = " + minM);
+                                //System.out.println("fbrCountPos = " + fbrCountPos);
+                                //System.out.println("fbrCountNeg = " + fbrCountNeg);
+                                int fbrCount2 = n - prevSolution.counts[0] + prevSolution.epsilons[0] + minM;
+                                //prevFullSize - fullSize + prevSingletons + currSingletons
+                                int fbrCountNeg2 = n - (prevSolution.counts[0] -  prevSolution.epsilons[0]);//prevFullSize - (fullSize - currSingletons);
+                                int fbrCountPos2 = fbrCount2 - fbrCountNeg2;
+                                //System.out.println("fbrCountPos2 = " + fbrCountPos);
+                                //System.out.println("fbrCountNeg2 = " + fbrCountNeg);
+                                currFbrWeight = fbrWeights.getWeight(l+1, n, prevSolution.counts[0], minM, prevSolution.epsilons[0]);
+                                //System.out.println("currFbrWeight = " + currFbrWeight);
+                                //System.out.println("");
+                                currFbrWeight *= prevSolution.getFbrWeight();
                                 minM++;
+                            }
+                            if (wasInLoop){
+                                minM -= 1;
                             }
                         }
 
 
-                        if (l == 0){
+                        /*if (l == 0){
                             minM = 0;
                             maxM = 0;
-                        }
+                        }*/
                         /*if (isValidFbr || isPreValidFbr) {
                             System.out.println("l = " + l + ", minM = " + minM + ", maxM = " + maxM +
                                     ", isValid = " + isValidFbr + ", isPreValid = " + isPreValidFbr);
-                        }*/
+                        }
+                        System.out.println(" ");*/
                         //System.out.println("prevSolution counts = " + Arrays.toString(prevSolution.counts) + ", epsilons = " + Arrays.toString(prevSolution.epsilons));
                         /*for (; minM <= maxM && !distance.firstPairDominates(currWeight, currFbrWeight,
                                 minWeight, minFbrWeight);
@@ -925,15 +951,15 @@ public class Signature implements Comparable<Signature> {
                             if (isPreValidFbr || isValidFbr) {
                                 int tempFbrCount = prevSolution.counts[0] - n + prevSolution.epsilons[0] + m;
                                 tempFbrCount = tempFbrCount / 2;
+                                //System.out.println("\t at l = " + l + ": n = " + n +", m = " + m + ", tempFbrCount = " + tempFbrCount + ", maxFbrCount = " + maxFbrCount);
                                 if (tempFbrCount < minFbrCount || tempFbrCount > maxFbrCount) {
-                                    //System.out.println("\t removing n = " + n +", m = " + m + ", tempFbrCount = " + tempFbrCount + ", maxFbrCount = " + maxFbrCount);
                                     continue;
                                 }
                             }
                             if (isValidFbr) {
                                 currFbrWeight = fbrWeights.getWeight(l + 1, n, prevSolution.counts[0],
                                         m, prevSolution.epsilons[0]) * prevSolution.getFbrWeight();
-                                //System.out.println("\t currFbrWeight = " + currFbrWeight + " for fbr count = " + temp);
+                                //System.out.println("at l = " + l + ": currFbrWeight = " + currFbrWeight + " for epsilons = " + m);
                             }
                             int nmSum = 0;
                             if (isValidFbr){
@@ -947,6 +973,10 @@ public class Signature implements Comparable<Signature> {
                             } else{
                                 extend(prevSolution, n, m, nmSum, currWeight, currFbrWeight, k - l, tmpSolution, currSolutions, distance, new FbrSolution(), isPreValidFbr, isValidFbr, l, fbrWeights);
                             }
+                            /*if(optSolution != null) {
+                                System.out.println(optSolution);
+                                //System.out.println("l = " + l + ": epsilons = " + Arrays.toString(optSolution.epsilons));
+                            }*/
                         }
                     }
                     /*if(optSolution != null && optSolution.getFbrWeight() == 1) {
