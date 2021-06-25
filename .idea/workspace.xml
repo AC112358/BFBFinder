@@ -22,14 +22,25 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b3151f04-4e84-4a1e-b5db-5953e5cc0d6b" name="Default Changelist" comment="Work on adding feature to include directional foldback information">
+    <list default="true" id="b3151f04-4e84-4a1e-b5db-5953e5cc0d6b" name="Default Changelist" comment="Fix bug in directional foldback read vector search">
+      <change afterPath="$PROJECT_DIR$/.idea/Ann_BFBFinder.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bfbf/BFB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bfbf/BFB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bfbf/FbrSigCurve.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bfbf/FbrSigCurve.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bfbf/Signature.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bfbf/Signature.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bfbf/distances/Distances.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bfbf/distances/Distances.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
@@ -58,6 +69,14 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="ProjectId" id="1fb1xCF7aYPnzpbGhtHOiRD9Hip" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -65,11 +84,13 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Dropbox/Caltech/Sophomore/SURF 2020/BFBFinder/external/trove-3.0.3/3.0.3/lib/trove-3.0.3.jar" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -93,7 +114,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618880048896</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Fix bug in directional foldback read vector search">
+      <created>1619191281288</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1619191281288</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -110,16 +138,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Work on adding feature to include directional foldback information" />
-    <option name="LAST_COMMIT_MESSAGE" value="Work on adding feature to include directional foldback information" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="226" y="68" key="Vcs.Push.Dialog.v2" timestamp="1618880090821">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="226" y="68" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1618880090821" />
-    <state x="273" y="153" key="run.anything.popup" timestamp="1618846390582">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="273" y="153" key="run.anything.popup/0.0.1280.680@0.0.1280.680" timestamp="1618846390582" />
+    <MESSAGE value="Fix bug in directional foldback read vector search" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bug in directional foldback read vector search" />
   </component>
 </project>

@@ -19,7 +19,7 @@ public class Distances {
 
     public double combineWeights(double countWeight, double fbrWeight){
 
-        return 0.5*countWeight + 0.5*fbrWeight;
+        return countWeight * fbrWeight;
     }
 
     public boolean firstPairDominates(double countWeight1, double fbrWeight1,

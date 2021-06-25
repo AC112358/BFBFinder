@@ -804,6 +804,7 @@ public class Signature implements Comparable<Signature> {
         for (int start = weights.length() - minLength; start >= 0; --start) {
             FbrSigCurve[] curves = fbrLowerBoundSigCurves(weights, fbrWeights, minWeight, minFbrWeight,
                     start, start + minLength, distance);
+            //System.out.println(curves.length + " , " + curves[0].toString());
             if (curves[minLength] != null && curves[minLength].size() > 0) {
                 if (curves[minLength].weights.size() > 0 && curves[minLength].weights.get(0) < bestWeight) {
                     bestWeight = curves[minLength].weights.get(0);
@@ -839,6 +840,7 @@ public class Signature implements Comparable<Signature> {
             prevSolutions.clear();
             prevSolutions.add(emptySolution);
             for (int l = k - 1; l >= 0; --l) {
+                //System.out.println(prevSolutions.toString());
                 boolean isValidFbr = (l < k - 1 && fbrWeights.getHeaviestCount(l + 1) > -1);
                 boolean isPreValidFbr = (fbrWeights.getHeaviestCount(l) > -1);
                 //System.out.println("l = " + l + " --> " + isValidFbr + " & " + isPreValidFbr);

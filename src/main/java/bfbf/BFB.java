@@ -63,6 +63,10 @@ counts, according to the Poisson error model:
 Adjacent segments can be combined if they are within 0.001 of each other.
 -s -a -c=0.001 -e=PolynomialCountErrorModel -E=PolynomialFbrErrorModel -w=0.9 -W=0.3 -f=[1,0,2] [3,3,4]
 
+
+7. Vector search where we include fbr weights as -f=<positive fbrs><negative fbrs> and fbr weight is the product of
+positive and negative fbr distances (note: directional fbr search currently only works for vector search)
+-v -e=PolynomialCountErrorModel -E=PolynomialFbrErrorModel -w=0.9 -W=0.9 -f=[1,0,2][0,0,1] [3,3,4]
  */
 
 import bfbf.distances.Distances;

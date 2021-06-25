@@ -282,7 +282,7 @@ public class FbrSigCurve{
         //boolean isPostValidFbr = (l > 0 && fw.getHeaviestCount(l - 1) > -1);
         int maxCount = w.getMaxCount(l);
         for (int currCount = w.getMinCount(l); currCount <= maxCount; ++currCount) {
-            //System.out.println("currCount = " + currCount);
+            //System.out.println("currCount = " + currCount + " with weight " + w.getWeight(l, currCount));
             int numElmts = 0;
             double currWeight = w.getWeight(l, currCount);
             for (int i = 0; i < prev.nmStreaks.size(); i++) {
@@ -438,8 +438,9 @@ public class FbrSigCurve{
             curves.add(currCurve);
             prevCurve = currCurve;
             //System.out.println(currCurve.nmSigs);
-            //System.out.println(currCurve.counts);
-            //System.out.println(currCurve.epsilons);
+            //System.out.println(currCurve.counts + " : " + currCurve.weights);
+            //System.out.println(currCurve.epsilons + " : " + currCurve.fbrWeights);
+            //System.out.println(currCurve.weights);
         }
         return curves;
     }
